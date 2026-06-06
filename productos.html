@@ -30,19 +30,95 @@
 
         .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
         .product-card { background: white; border-radius: 8px; padding: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
-        .product-card img { max-width: 100%; height: 150px; object-fit: cover; border-radius: 4px; }
+        
+        .product-card img { max-width: 100%; height: 150px; object-fit: cover; border-radius: 4px; cursor: pointer; transition: transform 0.2s; }
+        .product-card img:hover { transform: scale(1.03); }
+        
         .product-card h3 { font-size: 1.1rem; margin: 10px 0; }
         .price { color: var(--accent); font-weight: bold; font-size: 1.2rem; }
         .btn-add { background-color: var(--primary); color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; margin-top: 10px; }
 
-        .cart-sidebar { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); height: fit-content; }
+        .cart-sidebar { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); height: fit-content; position: sticky; top: 20px; }
         .cart-items { list-style: none; padding: 0; max-height: 200px; overflow-y: auto; }
         .cart-item { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-        .payment-methods { margin-top: 20px; border-top: 2px solid #eee; padding-top: 15px; }
+        
+        /* Formulario de datos del cliente */
+        .customer-form { margin-top: 20px; border-top: 2px solid #eee; padding-top: 15px; }
+        .customer-form h4 { margin-bottom: 10px; color: var(--primary); }
+        .form-group { margin-bottom: 12px; display: flex; flex-direction: column; }
+        .form-group label { font-size: 0.85rem; font-weight: bold; margin-bottom: 4px; color: #555; }
+        .form-group input { padding: 8px; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; }
+        .form-inline { display: flex; align-items: center; gap: 10px; margin-top: 5px; }
+        .form-inline label { margin-bottom: 0; cursor: pointer; }
+
+        /* Cuadro informativo de cuentas de la tienda */
+        .payment-info-box { background-color: #fff3e0; border-left: 4px solid var(--accent); padding: 12px; border-radius: 4px; margin-top: 15px; font-size: 0.85rem; }
+        .payment-info-box p { margin: 4px 0; color: #d84315; }
+        .payment-info-box strong { color: #2c3e50; }
+
+        .payment-methods { margin-top: 15px; border-top: 2px solid #eee; padding-top: 15px; }
         .btn-pay { display: block; width: 100%; padding: 10px; margin: 8px 0; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; color: white; text-align: center; text-decoration: none; }
         .enzona { background-color: #007bff; }
         .transfermovil { background-color: #d32f2f; }
         .loading { font-size: 1.2rem; text-align: center; grid-column: 1 / -1; padding: 40px; color: #666; }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            box-sizing: border-box;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 12px;
+            max-width: 650px;
+            width: 100%;
+            position: relative;
+            display: flex;
+            gap: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            animation: fadeIn 0.3s ease-out;
+        }
+        .modal-left { flex: 1; display: flex; align-items: center; justify-content: center; }
+        .modal-left img { max-width: 100%; max-height: 300px; object-fit: contain; border-radius: 6px; }
+        .modal-right { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+        .modal-right h2 { margin: 0 0 10px 0; font-size: 1.5rem; color: var(--primary); }
+        .modal-right .modal-price { font-size: 1.4rem; color: var(--accent); font-weight: bold; margin-bottom: 15px; }
+        .modal-right .modal-desc { font-size: 0.95rem; color: #555; line-height: 1.5; margin-bottom: 20px; white-space: pre-line; }
+        
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 30px;
+            font-weight: bold;
+            color: #aaa;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .close-modal:hover { color: #333; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @media (max-width: 600px) {
+            .modal-content { flex-direction: column; text-align: center; padding: 20px; }
+            .modal-left img { max-height: 200px; }
+            .modal-right .btn-add { width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -72,25 +148,78 @@
             </ul>
             <h3>Total: $<span id="cartTotal">0</span> CUP</h3>
 
+            <!-- Formulario de Datos de Entrega -->
+            <div class="customer-form">
+                <h4>Datos de Entrega:</h4>
+                <div class="form-group">
+                    <label for="custName">Nombre Completo *</label>
+                    <input type="text" id="custName" placeholder="Ej. Juan Pérez">
+                </div>
+                <div class="form-group">
+                    <label for="custPhone">Teléfono de Contacto *</label>
+                    <input type="tel" id="custPhone" placeholder="Ej. +53 51234567">
+                </div>
+                <div class="form-group">
+                    <label for="custAddress">Dirección Completa *</label>
+                    <input type="text" id="custAddress" placeholder="Calle, No., entre calles, localidad">
+                </div>
+                <div class="form-group">
+                    <label>¿Necesita Mensajería?</label>
+                    <div class="form-inline">
+                        <input type="radio" id="msgSi" name="messaging" value="Sí" checked>
+                        <label for="msgSi">Sí</label>
+                        <input type="radio" id="msgNo" name="messaging" value="No">
+                        <label for="msgNo">No (Recojo en tienda)</label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Información visual de cuentas para transferencias -->
+            <div class="payment-info-box">
+                <strong>📌 Cuentas de la Tienda:</strong>
+                <p>📲 <b>Móvil / EnZona:</b> <span id="infoMovil">Cargando...</span></p>
+                <p>💳 <b>Tarjeta (Transfermóvil):</b> <span id="infoTarjeta">Cargando...</span></p>
+            </div>
+
             <div class="payment-methods">
                 <h4>Método de Pago:</h4>
                 <button class="btn-pay enzona" onclick="processPayment('EnZona')">Pagar con EnZona</button>
                 <button class="btn-pay transfermovil" onclick="processPayment('Transfermóvil')">Pagar con Transfermóvil</button>
                 <button class="btn-pay efectivo" style="background-color: #2e7d32;" onclick="processPayment('Efectivo')">Pagar en Efectivo</button>
-
             </div>
         </aside>
     </div>
 
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeModal()">&times;</span>
+            <div class="modal-left">
+                <img id="modalImg" src="" alt="">
+            </div>
+            <div class="modal-right">
+                <h2 id="modalTitle">Nombre</h2>
+                <p id="modalPrice" class="modal-price">$0 CUP</p>
+                <p id="modalDesc" class="modal-desc">Detalles del producto...</p> 
+                <div id="modalActionBtn"></div>
+            </div>
+        </div>
+    </div>
     <script>
-        // Línea 74 reparada con el ID correcto de tu nueva hoja Tienda Hogar
         const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1mj4-AHqzVkRfvV5LHlnJzexFbsdNI8KmrBawkzwvnKI/gviz/tq?tqx=out:csv';
+
+        // ⚠️ CONFIGURA AQUÍ TUS DATOS DE COBRO REALES
+        const WHATSAPP_NUMBER = "5350168277";       // Tu número para recibir pedidos (sin el +)
+        const MI_MOVIL_PAGO = "53560235";           // Tu número de móvil (EnZona)
+        const MI_TARJETA_PAGO = "9205123456789012"; // Tu número de tarjeta física de 16 dígitos
 
         let cart = [];
         let total = 0;
 
-        // Cargar datos automáticamente al abrir la página
+        // Actualiza dinámicamente los textos del recuadro visual en la página al cargar
         window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('infoMovil').innerText = MI_MOVIL_PAGO;
+            document.getElementById('infoTarjeta').innerText = MI_TARJETA_PAGO;
+
             fetch(SHEET_CSV_URL)
                 .then(response => response.text())
                 .then(data => renderProductsFromCSV(data))
@@ -100,37 +229,66 @@
                 });
         });
 
-        // Convertir el texto de la Hoja de Cálculo en elementos HTML
         function renderProductsFromCSV(csvText) {
             const lines = csvText.split('\n');
             const catalog = document.getElementById('catalog');
             document.getElementById('loadingMessage').style.display = 'none';
 
-            // Empezamos en i = 1 para saltarnos los encabezados (nombre, precio, imagen)
             for (let i = 1; i < lines.length; i++) {
                 if (!lines[i].trim()) continue;
                 
-                // Dividir filas por comas, limpiando las comillas que añade Google
                 const columns = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 
                 const name = columns[0] ? columns[0].replace(/"/g, '').trim() : "Producto sin nombre";
                 const price = columns[1] ? parseInt(columns[1].replace(/"/g, '').trim()) : 0;
                 const image = columns[2] ? columns[2].replace(/"/g, '').trim() : "https://via.placeholder.com/150";
+                
+                let description = columns[3] ? columns[3].replace(/"/g, '').trim() : "";
+                if (!description) {
+                    description = `Producto de alta calidad para el confort de tu hogar. Disponible para entrega inmediata.`;
+                }
+
+                const safeName = name.replace(/'/g, "\\'");
+                const safeDesc = description.replace(/'/g, "\\'").replace(/\r?\n|\r/g, " ");
 
                 const productCard = document.createElement('div');
                 productCard.className = 'product-card';
                 productCard.setAttribute('data-name', name.toLowerCase());
+                
                 productCard.innerHTML = `
-                    <img src="${image}" alt="${name}">
+                    <img src="${image}" alt="${name}" onclick="openModal('${safeName}', ${price}, '${image}', '${safeDesc}')">
                     <h3>${name}</h3>
                     <p class="price">$${price} CUP</p>
-                    <button class="btn-add" onclick="addToCart('${name}', ${price})">Agregar al Carrito</button>
+                    <button class="btn-add" onclick="addToCart('${safeName}', ${price})">Agregar al Carrito</button>
                 `;
                 catalog.appendChild(productCard);
             }
         }
 
-        // Funciones del Carrito
+        function openModal(name, price, image, description) {
+            document.getElementById('modalImg').src = image;
+            document.getElementById('modalTitle').innerText = name;
+            document.getElementById('modalPrice').innerText = `$${price} CUP`;
+            document.getElementById('modalDesc').innerText = description;
+            
+            document.getElementById('modalActionBtn').innerHTML = `
+                <button class="btn-add" style="width:100%; margin-top:0;" onclick="addToCart('${name.replace(/'/g, "\\'")}', ${price}); closeModal();">Agregar al Carrito</button>
+            `;
+            
+            document.getElementById('productModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('productModal').style.display = 'none';
+        }
+
+        window.addEventListener('click', (e) => {
+            const modal = document.getElementById('productModal');
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
         function addToCart(name, price) {
             cart.push({name, price});
             total += price;
@@ -155,7 +313,6 @@
             totalElement.innerText = total;
         }
 
-        // Buscador
         function filterProducts() {
             const query = document.getElementById('searchBox').value.toLowerCase();
             const products = document.querySelectorAll('.product-card');
@@ -165,24 +322,61 @@
             });
         }
 
-        // Procesar pedido y enviar a WhatsApp
         function processPayment(method) {
             if(cart.length === 0) {
                 alert("El carrito está vacío.");
                 return;
             }
-            let message = `¡Hola Tienda Hogar! %0AQuiero confirmar el siguiente pedido:%0A`;
-            cart.forEach(item => { message += `- ${item.name} ($${item.price} CUP)%0A`; });
-            message += `%0ATotal: $${total} CUP%0APago: ${method}%0ASolicito servicio de mensajería.`;
 
-            if(method === 'EnZona') {
-                alert(`Listo para pagar con EnZona ($${total} CUP).\nPresiona aceptar para enviar los detalles a WhatsApp.`);
-            } else {
-                alert(`Instrucción Transfermóvil:\nRealice la transferencia de $${total} CUP a la cuenta de la tienda y presione aceptar para enviar el pedido por WhatsApp.`);
+            // Obtener los datos rellenados por el cliente
+            const name = document.getElementById('custName').value.trim();
+            const phone = document.getElementById('custPhone').value.trim();
+            const address = document.getElementById('custAddress').value.trim();
+            const messaging = document.querySelector('input[name="messaging"]:checked').value;
+
+            // Validación de campos requeridos
+            if (!name || !phone || !address) {
+                alert("Por favor, complete todos los campos obligatorios (*) de los datos de entrega.");
+                return;
             }
-            window.open(`https://wa.me/5350168277?text=${message}`, '_blank');
+
+            let message = `¡Hola Tienda Hogar! \n`;
+            message += `Quiero confirmar el siguiente pedido:\n\n`;
+            
+            cart.forEach(item => { 
+                message += `- ${item.name} ($${item.price} CUP)\n`; 
+            });
+
+            message += `\n💰 Total: $${total} CUP`;
+            message += `\n💳 Método de Pago: ${method}`;
+            
+            // Adjuntar confirmación de destino según el método de pago elegido
+            if (method === 'Transfermóvil') {
+                message += `\n📍 Destino de Transferencia (Tarjeta): ${MI_TARJETA_PAGO}`;
+            } else if (method === 'EnZona') {
+                message += `\n📍 Destino de Transferencia (Móvil): ${MI_MOVIL_PAGO}`;
+            }
+
+            message += `\n\n👤 Datos del Cliente:`;
+            message += `\n- Nombre: ${name}`;
+            message += `\n- Teléfono: ${phone}`;
+            message += `\n- Dirección: ${address}`;
+            message += `\n- ¿Requiere Mensajería?: ${messaging}`;
+
+            // Alertas en el navegador con las instrucciones
+            if(method === 'Efectivo') {
+                alert(`Listo para pagar en Efectivo ($${total} CUP).\nPresiona aceptar para enviar los detalles de la orden a WhatsApp.`);
+            } else if(method === 'EnZona') {
+                alert(`Realice la transferencia de $${total} CUP al móvil de EnZona:\n👉 ${MI_MOVIL_PAGO}\n\nAl aceptar, se enviará la orden por WhatsApp para que adjuntes el comprobante.`);
+            } else if(method === 'Transfermóvil') {
+                alert(`Realice la transferencia de $${total} CUP a la tarjeta:\n👉 ${MI_TARJETA_PAGO}\n\nAl aceptar, se enviará la orden por WhatsApp para que adjuntes el comprobante.`);
+            }
+
+            const encodedMessage = encodeURIComponent(message);
+            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+
+            window.open(whatsappUrl, '_blank');
         }
     </script>
 </body>
 </html>
-
