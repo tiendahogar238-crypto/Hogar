@@ -144,7 +144,7 @@
 
         .cart-items { list-style: none; padding: 0; max-height: 220px; overflow-y: auto; margin-bottom: 20px; }
         
-        /* NUEVO ESTILO: Item de carrito optimizado con alineación perfecta */
+        /* Item de carrito optimizado con alineación perfecta */
         .cart-item { 
             display: flex; 
             justify-content: space-between; 
@@ -160,7 +160,7 @@
 
         .cart-sidebar h3 { font-size: 1.2rem; color: #1e293b; display: flex; justify-content: space-between; background: #f8fafc; padding: 10px; border-radius: 8px; }
         
-        /* Formulario de datos del cliente estilizado */
+        /* Formulario de datos del cliente */
         .customer-form { margin-top: 25px; border-top: 2px solid #f1f5f9; padding-top: 20px; }
         .customer-form h4 { margin: 0 0 15px 0; color: var(--primary-dark); font-size: 1.05rem; }
         .form-group { margin-bottom: 15px; display: flex; flex-direction: column; }
@@ -249,7 +249,7 @@
         <div class="categories-container">
             <button class="btn-category active" onclick="filterCategory('todos', this)">✨ Todos</button>
             <button class="btn-category" onclick="filterCategory('sala', this)"> Sala</button>
-             <button class="btn-category" onclick="filterCategory('cocina', this)"> Cocina</button>
+            <button class="btn-category" onclick="filterCategory('cocina', this)"> Cocina</button>
             <button class="btn-category" onclick="filterCategory('baño', this)"> Baño</button>
             <button class="btn-category" onclick="filterCategory('cuarto', this)"> Cuarto</button>
             <button class="btn-category" onclick="filterCategory('electrodomésticos', this)"> Electrodomésticos</button>
@@ -329,6 +329,7 @@
             </div>
         </div>
     </div>
+
     <script>
         const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1mj4-AHqzVkRfvV5LHlnJzexFbsdNI8KmrBawkzwvnKI/gviz/tq?tqx=out:csv';
 
@@ -390,6 +391,12 @@
                 `;
                 catalog.appendChild(productCard);
             }
+            
+            // Ejecutamos el filtro inicial para que al cargar muestre solo los seleccionados de "Todos"
+            const btnTodos = document.querySelector('.btn-category.active');
+            if (btnTodos) {
+                filterCategory('todos', btnTodos);
+            }
         }
 
         function openModal(name, price, image, description) {
@@ -427,7 +434,6 @@
             updateCartUI();
         }
 
-        // INTEGRADO: Función de actualización con el botón "X" para eliminar productos sin dejar celdas vacías
         function updateCartUI() {
             const cartItemsElement = document.getElementById('cartItems');
             const totalElement = document.getElementById('cartTotal');
@@ -455,22 +461,33 @@
             totalElement.innerText = total;
         }
 
-        // INTEGRADO: Nueva función que borra el artículo y reorganiza la lista hacia arriba de forma automática
         function removeFromCart(index) {
             total -= cart[index].price;
             cart.splice(index, 1);
             updateCartUI();
         }
 
+        // FUNCIÓN CORREGIDA: Controla que en "Todos" solo salgan los primeros 6 productos
         function filterCategory(categoryName, buttonElement) {
             currentCategory = categoryName.toLowerCase();
             document.querySelectorAll('.btn-category').forEach(btn => btn.classList.remove('active'));
             buttonElement.classList.add('active');
             
             const products = document.querySelectorAll('.product-card');
+            let contadorTodos = 0;
+            const LIMITE_TODOS = 6; // <-- Si quieres mostrar más o menos en 'Todos', cambia este 6
+
             products.forEach(product => {
                 const category = product.getAttribute('data-category');
-                if (currentCategory === 'todos' || category === currentCategory) {
+                
+                if (currentCategory === 'todos') {
+                    if (contadorTodos < LIMITE_TODOS) {
+                        product.style.display = "flex";
+                        contadorTodos++;
+                    } else {
+                        product.style.display = "none";
+                    }
+                } else if (category === currentCategory) {
                     product.style.display = "flex";
                 } else {
                     product.style.display = "none";
