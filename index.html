@@ -3,401 +3,66 @@
 <head> 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda Hogar - Inicio Profesional</title>
+    <title>Tienda Hogar - Inicio</title>
     
     <link rel="icon" href="favicon.png" type="image/png">
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
-            --primary: #1a1a1a;       /* Gris oscuro elegante */
-            --secondary: #2d3748;     /* Gris azulado para navegación */
-            --accent: #ff6b6b;        /* Coral/Naranja vivo para resaltar */
-            --accent-hover: #e55555;  /* Color al pasar el dedo/cursor */
-            --whatsapp: #25d366;      /* Verde oficial de WhatsApp */
-            --light: #f7fafc;         /* Fondo claro y limpio */
-            --card-shadow: 0 10px 25px rgba(0,0,0,0.05);
-            --card-shadow-hover: 0 20px 35px rgba(0,0,0,0.12);
+            --primary: #0f766e;
+            --primary-dark: #115e59;
+            --accent: #f97316;
+            --accent-hover: #ea580c;
+            --whatsapp: #25d366;
+            --light: #f4f7f6;
+            --text-main: #1e293b;
+            --card-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            --card-shadow-hover: 0 10px 25px rgba(0,0,0,0.06);
         }
         
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: var(--light);
-            color: #2d3748;
-            line-height: 1.6;
-        }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 0; background-color: var(--light); color: var(--text-main); line-height: 1.6; }
         
-        header {
-            background-color: var(--primary);
-            color: white;
-            padding: 40px 20px;
-            text-align: center;
-            border-bottom: 4px solid var(--accent);
-        }
+        header { background: linear-gradient(135deg, var(--primary), #134e4a); color: white; padding: 40px 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        header h1 { margin: 0; font-size: 2.5rem; display: flex; align-items: center; justify-content: center; gap: 14px; font-weight: 800; }
+        header h1 i { color: var(--accent); font-size: 2.3rem; }
+        header p { margin: 12px 0 0 0; font-size: 1.1rem; color: #cbd5e1; font-style: italic; }
         
-        header h1 {
-            margin: 0;
-            font-size: 2.8rem;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            font-weight: 800;
-        }
+        nav { background-color: #1e293b; display: flex; justify-content: center; padding: 14px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 1000; }
+        nav a { color: #94a3b8; text-decoration: none; margin: 0 25px; font-weight: 600; font-size: 1.05rem; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+        nav a:hover { color: white; transform: translateY(-1px); }
         
-        header h1 i {
-            color: var(--accent);
-            font-size: 2.5rem;
-        }
+        .hero { background: linear-gradient(rgba(15, 118, 110, 0.45), rgba(19, 78, 74, 0.85)), url('https://images.unsplash.com/photo-1513694203232-719a280e022f?ixlib=rb-4.0.3') center/cover no-repeat; height: 380px; display: flex; flex-direction: column; justify-content: center; align-items: center; color: white; text-align: center; padding: 0 20px; }
+        .hero h2 { font-size: 2.6rem; margin-bottom: 15px; text-shadow: 2px 2px 8px rgba(0,0,0,0.4); font-weight: 700; }
+        .btn { background-color: var(--accent); color: white; padding: 14px 32px; text-decoration: none; border-radius: 30px; font-weight: bold; font-size: 1.05rem; box-shadow: 0 4px 14px rgba(249, 115, 22, 0.4); transition: 0.25s; display: inline-flex; align-items: center; gap: 10px; }
+        .btn:hover { background-color: var(--accent-hover); transform: translateY(-2px); }
         
-        header p {
-            margin: 12px 0 0 0;
-            font-size: 1.15rem;
-            color: #cbd5e0;
-            font-style: italic;
-        }
+        .sections-bg { max-width: 1200px; margin: 0 auto; padding: 50px 20px; }
+        .section-title { font-size: 2rem; text-align: center; margin-bottom: 40px; color: #334155; font-weight: 700; position: relative; }
+        .section-title::after { content: ''; display: block; width: 50px; height: 4px; background-color: var(--primary); margin: 10px auto 0 auto; border-radius: 2px; }
         
-        nav {
-            background-color: var(--secondary);
-            display: flex;
-            justify-content: center;
-            padding: 14px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-        }
-        
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin: 0 25px;
-            font-weight: 600;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        nav a:hover {
-            color: var(--accent);
-            transform: translateY(-1px);
-        }
-        
-        .hero {
-            background: linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.65)), url('https://images.unsplash.com/photo-1513694203232-719a280e022f?ixlib=rb-4.0.3') center/cover no-repeat;
-            height: 400px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: white;
-            text-align: center;
-            padding: 0 20px;
-        }
-        
-        .hero h2 { 
-            font-size: 2.8rem; 
-            margin-bottom: 15px; 
-            text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
-        }
-        
-        .hero p {
-            font-size: 1.25rem;
-            margin-bottom: 30px;
-            max-width: 650px;
-            color: #f7fafc;
-        }
-        
-        .btn {
-            background-color: var(--accent);
-            color: white;
-            padding: 15px 35px;
-            text-decoration: none;
-            border-radius: 30px;
-            font-weight: bold;
-            font-size: 1.1rem;
-            box-shadow: 0 5px 20px rgba(255, 107, 107, 0.4);
-            transition: all 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .btn:hover { 
-            background-color: var(--accent-hover);
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.5);
-        }
-        
-        .sections-bg {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 60px 20px;
-        }
+        .services-grid { display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; margin-bottom: 30px; }
+        .service-card { background: white; padding: 30px 20px; border-radius: 16px; width: 220px; box-shadow: var(--card-shadow); border: 1px solid #edf2f1; transition: 0.25s; text-align: center; }
+        .service-card:hover { transform: translateY(-5px); box-shadow: var(--card-shadow-hover); border-top: 5px solid var(--accent); }
+        .service-icon { font-size: 2.5rem; margin-bottom: 15px; color: var(--primary); }
+        .service-card h4 { margin: 0; color: #334155; font-size: 1.1rem; }
 
-        .section-title {
-            font-size: 2.2rem;
-            text-align: center;
-            margin-bottom: 40px;
-            color: var(--primary);
-            position: relative;
-            font-weight: 700;
-        }
+        .products-grid { display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; }
+        .product-card { background: white; border-radius: 16px; width: 280px; overflow: hidden; box-shadow: var(--card-shadow); border: 1px solid #edf2f1; transition: 0.25s; display: flex; flex-direction: column; position: relative; }
+        .product-card:hover { transform: translateY(-5px); box-shadow: var(--card-shadow-hover); }
+        .product-badge { position: absolute; top: 15px; left: 15px; background-color: var(--primary); color: white; padding: 5px 12px; font-size: 0.75rem; font-weight: bold; border-radius: 20px; text-transform: uppercase; z-index: 10; }
+        .product-img { width: 100%; height: 200px; object-fit: cover; }
+        .product-info { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-price { font-size: 1.35rem; color: var(--accent); font-weight: 700; margin-bottom: 15px; }
+        .btn-order { background-color: var(--whatsapp); color: white; text-decoration: none; padding: 11px; border-radius: 10px; text-align: center; font-weight: bold; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; margin-top: auto; }
 
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 60px;
-            height: 4px;
-            background-color: var(--accent);
-            margin: 10px auto 0 auto;
-            border-radius: 2px;
-        }
-        
-        .services-grid {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-            margin-bottom: 30px;
-        }
-        
-        .service-card {
-            background: white;
-            padding: 35px 25px;
-            border-radius: 15px;
-            width: 290px;
-            box-shadow: var(--card-shadow);
-            border-top: 5px solid var(--secondary);
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            text-align: center;
-        }
-        
-        .service-card:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--card-shadow-hover);
-            border-top-color: var(--accent);
-        }
-        
-        .service-icon {
-            font-size: 2.6rem;
-            margin-bottom: 15px;
-            color: var(--accent);
-            display: inline-block;
-        }
-        
-        .service-card h4 { 
-            font-size: 1.35rem; 
-            margin: 10px 0;
-            color: var(--primary);
-        }
-        
-        .service-card p {
-            color: #718096;
-            font-size: 0.95rem;
-            margin: 0;
-        }
-
-        /* SECCIÓN: PRODUCTOS DESTACADOS */
-        .products-grid {
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-        }
-
-        .product-card {
-            background: white;
-            border-radius: 15px;
-            width: 280px;
-            overflow: hidden;
-            box-shadow: var(--card-shadow);
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        .product-card:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--card-shadow-hover);
-        }
-
-        .product-badge {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            background-color: var(--primary);
-            color: white;
-            padding: 5px 12px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            border-radius: 20px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            z-index: 10;
-        }
-
-        .product-img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            background-color: #e2e8f0;
-        }
-
-        .product-info {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-
-        .product-info h4 {
-            margin: 0 0 10px 0;
-            font-size: 1.2rem;
-            color: var(--primary);
-        }
-
-        .product-price {
-            font-size: 1.4rem;
-            color: var(--accent);
-            font-weight: bold;
-            margin-bottom: 15px;
-        }
-
-        .btn-order {
-            background-color: var(--whatsapp);
-            color: white;
-            text-decoration: none;
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: 0.2s ease;
-            margin-top: auto;
-        }
-
-        .btn-order:hover {
-            opacity: 0.9;
-            transform: scale(1.02);
-        }
-
-        footer {
-            background-color: var(--primary);
-            color: #a0aec0;
-            padding: 60px 20px;
-            text-align: center;
-            border-top: 4px solid var(--accent);
-        }
-        
-        footer h3 {
-            color: white;
-            margin-bottom: 25px;
-            font-size: 1.7rem;
-        }
-        
-        .contact-info {
-            margin-bottom: 30px;
-            font-size: 1.15rem;
-            color: #cbd5e0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .contact-info i {
-            color: var(--accent);
-            font-size: 1.3rem;
-        }
-        
-        .contact-info a {
-            color: white;
-            text-decoration: none;
-            transition: 0.3s ease;
-        }
-        
-        .contact-info a:hover {
-            color: var(--accent);
-        }
-        
-        .social-links {
-            margin: 30px 0;
-        }
-        
-        .social-links p {
-            color: #a0aec0;
-            margin-bottom: 15px;
-            font-weight: 500;
-        }
-        
-        .social-containers {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-        }
-        
-        .social-links a {
-            color: white;
-            text-decoration: none;
-            font-size: 1.1rem;
-            background-color: rgba(255,255,255,0.05);
-            padding: 12px 24px;
-            border-radius: 25px;
-            transition: 0.3s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        
-        .social-links a.fb:hover { 
-            background-color: #1877f2; 
-            border-color: #1877f2;
-        }
-        .social-links a.ig:hover { 
-            background-color: #e1306c; 
-            border-color: #e1306c;
-        }
-        
-        .btn-whatsapp {
-            background-color: var(--whatsapp);
-            color: white;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 16px 32px;
-            border-radius: 30px;
-            text-decoration: none;
-            margin-top: 20px;
-            font-weight: bold;
-            font-size: 1.15rem;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
-            transition: all 0.3s ease;
-        }
-        
-        .btn-whatsapp:hover {
-            transform: translateY(-2px) scale(1.03);
-            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.5);
-        }
-        
-        .copy {
-            margin-top: 40px;
-            font-size: 0.9rem;
-            color: #718096;
-        }
+        footer { background: linear-gradient(135deg, #1e293b, #0f172a); color: #94a3b8; padding: 50px 20px; text-align: center; border-top: 4px solid var(--primary); }
+        .social-containers { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
+        .social-links a { color: white; text-decoration: none; padding: 11px 22px; border-radius: 25px; border: 1px solid rgba(255,255,255,0.08); transition: 0.25s; display: inline-flex; align-items: center; gap: 10px; }
+        .fb:hover { background-color: #1877f2; }
+        .ig:hover { background-color: #e1306c; }
+        .btn-whatsapp { background-color: var(--whatsapp); color: white; display: inline-flex; align-items: center; gap: 10px; padding: 15px 30px; border-radius: 30px; text-decoration: none; margin-top: 20px; font-weight: bold; transition: 0.3s; }
+        .btn-whatsapp:hover { transform: translateY(-2px); }
     </style>
 </head>
 <body>
@@ -414,31 +79,24 @@
 
     <section class="hero">
         <h2>Moderniza tu Espacio</h2>
-        <p>Encuentra los mejores artículos para tu hogar con envío rápido y total garantía.</p>
-        <a href="productos.html" class="btn">
-            <i class="fa-solid fa-cart-shopping"></i> Explorar Catálogo Completo
-        </a>
+        <a href="productos.html" class="btn"><i class="fa-solid fa-cart-shopping"></i> Explorar Catálogo</a>
     </section>
 
     <main class="sections-bg">
-        
         <section style="margin-bottom: 70px;">
             <h3 class="section-title">✨ Nuestros Servicios</h3>
             <div class="services-grid">
                 <div class="service-card">
-                    <span class="service-icon"><i class="fa-solid fa-motorcycle"></i></span>
-                    <h4>Servicio Mensajería</h4>
-                    <p>Llevamos tus compras de forma rápida, segura y directa hasta la comodidad de tu casa.</p>
+                    <div class="service-icon"><i class="fa-solid fa-motorcycle"></i></div>
+                    <h4>Mensajería</h4>
                 </div>
                 <div class="service-card">
-                    <span class="service-icon"><i class="fa-solid fa-credit-card"></i></span>
-                    <h4>Pagos Flexibles</h4>
-                    <p>Aceptamos efectivo al momento de la entrega o pagos electrónicos vía EnZona y Transfermóvil.</p>
+                    <div class="service-icon"><i class="fa-solid fa-credit-card"></i></div>
+                    <h4>Pagos Online</h4>
                 </div>
                 <div class="service-card">
-                    <span class="service-icon"><i class="fa-solid fa-phone"></i></span>
-                    <h4>Atención Directa</h4>
-                    <p>Contáctanos directamente vía WhatsApp para gestionar tus pedidos personalizados en tiempo real.</p>
+                    <div class="service-icon"><i class="fa-solid fa-headset"></i></div>
+                    <h4>Atención 24/7</h4>
                 </div>
             </div>
         </section>
@@ -446,75 +104,54 @@
         <section>
             <h3 class="section-title">🔥 Productos Destacados</h3>
             <div class="products-grid">
-                
-                <!-- PRODUCTO 1: Fundas de Sofá -->
+                <!-- PRODUCTO 1 -->
                 <div class="product-card">
                     <span class="product-badge">Nuevo</span>
-                    <img src="IMG-20260521-WA0032.jpg" alt="Funda Elegante para Sofá" class="product-img">
+                    <img src="IMG-20260521-WA0032.jpg" alt="Funda" class="product-img">
                     <div class="product-info">
                         <h4>Funda Confort para Sofá</h4>
                         <div class="product-price">$28,000 CUP</div>
                         <a href="https://api.whatsapp.com/send?phone=5350168277&text=Hola,%20me%20interesa%20la%20Funda%20Confort%20para%20Sofá" target="_blank" class="btn-order">
-                            <i class="fa-brands fa-whatsapp"></i> Ordenar por WhatsApp
+                            <i class="fa-brands fa-whatsapp"></i> Ordenar
                         </a>
                     </div>
                 </div>
-
-                <!-- PRODUCTO 2: Organizador de Cocina Multiuso -->
+                <!-- PRODUCTO 2 -->
                 <div class="product-card">
-                    <span class="product-badge">Top Ventas</span>
-                    <img src="IMG-20260606-WA0018.jpg" alt="Estante Organizador de Microondas y Cocina" class="product-img">
+                    <span class="product-badge">Top</span>
+                    <img src="IMG-20260606-WA0018.jpg" alt="Estante" class="product-img">
                     <div class="product-info">
                         <h4>Estante Organizador Multiuso</h4>
                         <div class="product-price">$14,000 CUP</div>
                         <a href="https://api.whatsapp.com/send?phone=5350168277&text=Hola,%20me%20interesa%20el%20Estante%20Organizador%20Multiuso" target="_blank" class="btn-order">
-                            <i class="fa-brands fa-whatsapp"></i> Ordenar por WhatsApp
+                            <i class="fa-brands fa-whatsapp"></i> Ordenar
                         </a>
                     </div>
                 </div>
-
-                <!-- PRODUCTO 3: Set de Cuchillos -->
+                <!-- PRODUCTO 3 -->
                 <div class="product-card">
-                    <span class="product-badge">Garantía</span>
-                    <img src="IMG-20260606-WA0017.jpg" alt="Set de Cuchillos con Soporte Acrílico" class="product-img">
+                    <span class="product-badge">Premium</span>
+                    <img src="IMG-20260606-WA0019.jpg" alt="Cuchillos" class="product-img">
                     <div class="product-info">
                         <h4>Set de Cuchillos Premium</h4>
                         <div class="product-price">$18,000 CUP</div>
                         <a href="https://api.whatsapp.com/send?phone=5350168277&text=Hola,%20me%20interesa%20el%20Set%20de%20Cuchillos%20Premium" target="_blank" class="btn-order">
-                            <i class="fa-brands fa-whatsapp"></i> Ordenar por WhatsApp
+                            <i class="fa-brands fa-whatsapp"></i> Ordenar
                         </a>
                     </div>
                 </div>
-
             </div>
         </section>
-
     </main>
 
     <footer>
         <h3>Contacto Oficial</h3>
-        <div class="contact-info">
-            <i class="fa-solid fa-envelope"></i>
-            <a href="mailto:tiendahogar238@gmail.com">tiendahogar238@gmail.com</a>
+        <div class="social-containers">
+            <a href="https://www.facebook.com/profile.php?id=61590415707976" target="_blank" class="fb"><i class="fa-brands fa-facebook"></i> Facebook</a>
+            <a href="https://www.instagram.com/tiendahogar108" target="_blank" class="ig"><i class="fa-brands fa-instagram"></i> Instagram</a>
         </div>
-        
-        <div class="social-links">
-            <p>🔗 Encuéntranos en redes sociales:</p>
-            <div class="social-containers">
-                <a href="https://www.facebook.com/profile.php?id=61590415707976" target="_blank" rel="noopener" class="fb">
-                    <i class="fa-brands fa-facebook"></i> Facebook
-                </a>
-                <a href="https://www.instagram.com/tiendahogar108?igsh=d2J5ZXplczR5cXNw" target="_blank" rel="noopener" class="ig">
-                    <i class="fa-brands fa-instagram"></i> Instagram
-                </a>
-            </div>
-        </div>
-        
-        <a href="https://api.whatsapp.com/send?phone=5350168277&text=Hola%20Tienda%20Hogar,%20me%20gustaría%20hacer%20una%20consulta" class="btn-whatsapp" target="_blank" rel="noopener">
-            <i class="fa-brands fa-whatsapp"></i> Contactar por WhatsApp
-        </a>
-        
-        <p class="copy">&copy; 2026 Tienda Hogar. Todos los derechos reservados.</p>
+        <a href="https://api.whatsapp.com/send?phone=5350168277" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> Contactar por WhatsApp</a>
+        <p style="margin-top:40px; font-size:0.85rem;">&copy; 2026 Tienda Hogar.</p>
     </footer>
 
 </body>
