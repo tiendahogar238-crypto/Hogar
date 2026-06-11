@@ -235,8 +235,7 @@
     <div class="container">
 
         <div class="categories-container">
-            <button class="btn-category active" id="btn-todos" onclick="filterCategory('todos', this)"> Todos</button>
-            <button class="btn-category" onclick="filterCategory('sala', this)"> Sala</button>
+            <button class="btn-category active" onclick="filterCategory('sala', this)"> Sala</button>
             <button class="btn-category" onclick="filterCategory('cocina', this)"> Cocina</button>
             <button class="btn-category" onclick="filterCategory('baño', this)"> Baño</button>
             <button class="btn-category" onclick="filterCategory('cuarto', this)"> Cuarto</button>
@@ -319,7 +318,6 @@
     </div>
 
     <script>
-        // CORREGIDO: URL Sincronizada con el ID del documento y forzando la lectura de la pestaña inicial (gid=0)
         const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1LosBtgt_kjfnVb0PsmFFhk8vxKLJ9l0gZhekEiYZ2yM/export?format=csv&gid=0';
 
         const WHATSAPP_NUMBER = "5350168277";       
@@ -329,8 +327,8 @@
         let cart = [];
         let total = 0;
         
-        // CORREGIDO: Iniciamos mostrando 'todos' los productos para evitar pantallas en blanco si no hay artículos en "sala"
-        let currentCategory = 'todos'; 
+        // CORREGIDO: Por defecto arranca filtrando la categoría 'sala' al cargar la página
+        let currentCategory = 'sala'; 
 
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('infoMovil').innerText = MI_MOVIL_PAGO;
@@ -341,9 +339,13 @@
                     if (!response.ok) throw new Error("No se pudo obtener respuesta del servidor.");
                     return response.text();
                 })
-                .then(data => renderProductsFromCSV(data))
+                .then(data => {
+                    renderProductsFromCSV(data);
+                    // CORREGIDO: Forzar la ejecución del filtro inicial tras renderizar el catálogo completo
+                    applyInitialFilter();
+                })
                 .catch(error => {
-                    document.getElementById('loadingMessage').innerText = "Error al cargar los productos. Asegúrate de que el documento de Google Sheets esté compartido de manera 'Pública' (Cualquier persona con el enlace puede leer).";
+                    document.getElementById('loadingMessage').innerText = "Error al cargar los productos. Asegúrate de que el documento de Google Sheets esté compartido de manera 'Pública'.";
                     console.error(error);
                 });
         });
@@ -358,10 +360,8 @@
             for (let i = 1; i < lines.length; i++) {
                 if (!lines[i].trim()) continue;
                 
-                // Separador inteligente compatible con celdas que contienen comas internas
                 const columns = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 
-                // CORREGIDO: Validación estricta para evitar errores con líneas residuales de Excel
                 if (columns.length < 2 || !columns[0] || columns[0].trim() === '""' || columns[0].trim() === '') continue;
                 
                 const name = columns[0] ? columns[0].replace(/"/g, '').trim() : "Producto sin nombre";
@@ -395,8 +395,21 @@
             
             if (productosCargados === 0) {
                 document.getElementById('loadingMessage').style.display = 'block';
-                document.getElementById('loadingMessage').innerText = "No se encontraron productos válidos en el archivo Excel.";
+                document.getElementById('loadingMessage').innerText = "No se encontraron productos válidos.";
             }
+        }
+
+        // CORREGIDO: Nueva función para ocultar los productos que no pertenezcan a la primera categoría ('sala') en la carga inicial
+        function applyInitialFilter() {
+            const products = document.querySelectorAll('.product-card');
+            products.forEach(product => {
+                const category = product.getAttribute('data-category');
+                if (category === currentCategory) {
+                    product.style.display = "flex";
+                } else {
+                    product.style.display = "none";
+                }
+            });
         }
 
         function openModal(name, price, image, description) {
@@ -479,8 +492,8 @@
             products.forEach(product => {
                 const category = product.getAttribute('data-category');
                 
-                // CORREGIDO: Lógica limpia para el botón "Todos" o coincidencia exacta de categoría
-                if (currentCategory === 'todos' || category === currentCategory) {
+                // CORREGIDO: Lógica simplificada de comparación directa ya que no existe el botón 'todos'
+                if (category === currentCategory) {
                     product.style.display = "flex";
                 } else {
                     product.style.display = "none";
