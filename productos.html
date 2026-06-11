@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE ht<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -247,7 +247,6 @@
     <div class="container">
 
         <div class="categories-container">
-            <button class="btn-category active" onclick="filterCategory('todos', this)">✨ Todos</button>
             <button class="btn-category" onclick="filterCategory('sala', this)"> Sala</button>
             <button class="btn-category" onclick="filterCategory('cocina', this)"> Cocina</button>
             <button class="btn-category" onclick="filterCategory('baño', this)"> Baño</button>
@@ -339,7 +338,9 @@
 
         let cart = [];
         let total = 0;
-        let currentCategory = 'todos'; 
+        
+        // Categoría que se mostrará automáticamente al cargar la tienda
+        let currentCategory = 'sala'; 
 
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('infoMovil').innerText = MI_MOVIL_PAGO;
@@ -392,10 +393,13 @@
                 catalog.appendChild(productCard);
             }
             
-            // Ejecutamos el filtro inicial para que al cargar muestre solo los seleccionados de "Todos"
-            const btnTodos = document.querySelector('.btn-category.active');
-            if (btnTodos) {
-                filterCategory('todos', btnTodos);
+            // Busca el botón HTML que coincide exactamente con nuestra categoría por defecto ('sala')
+            const botonInicial = Array.from(document.querySelectorAll('.btn-category'))
+                .find(btn => btn.textContent.trim().toLowerCase() === currentCategory);
+
+            // Si lo encuentra, activa ese botón y filtra los productos automáticamente
+            if (botonInicial) {
+                filterCategory(currentCategory, botonInicial);
             }
         }
 
@@ -405,8 +409,10 @@
             document.getElementById('modalPrice').innerText = `$${price} CUP`;
             document.getElementById('modalDesc').innerText = description;
             
+            // Reemplazo limpio para evitar cierres de cadena inesperados en el onclick del modal
+            const cleanName = name.replace(/'/g, "\\'");
             document.getElementById('modalActionBtn').innerHTML = `
-                <button class="btn-add" style="width:100%; margin-top:0;" onclick="addToCart('${name.replace(/'/g, "\\'")}', ${price}); closeModal();">Agregar al Carrito</button>
+                <button class="btn-add" style="width:100%; margin-top:0;" onclick="addToCart('${cleanName}', ${price}); closeModal();">Agregar al Carrito</button>
             `;
             
             document.getElementById('productModal').style.display = 'flex';
@@ -467,27 +473,20 @@
             updateCartUI();
         }
 
-        // FUNCIÓN CORREGIDA: Controla que en "Todos" solo salgan los primeros 6 productos
         function filterCategory(categoryName, buttonElement) {
             currentCategory = categoryName.toLowerCase();
+            
+            // Quita la clase activa a todos los botones y se la asigna al seleccionado
             document.querySelectorAll('.btn-category').forEach(btn => btn.classList.remove('active'));
             buttonElement.classList.add('active');
             
             const products = document.querySelectorAll('.product-card');
-            let contadorTodos = 0;
-            const LIMITE_TODOS = 6; // <-- Si quieres mostrar más o menos en 'Todos', cambia este 6
 
+            // Muestra exclusivamente los productos de la categoría seleccionada
             products.forEach(product => {
                 const category = product.getAttribute('data-category');
                 
-                if (currentCategory === 'todos') {
-                    if (contadorTodos < LIMITE_TODOS) {
-                        product.style.display = "flex";
-                        contadorTodos++;
-                    } else {
-                        product.style.display = "none";
-                    }
-                } else if (category === currentCategory) {
+                if (category === currentCategory) {
                     product.style.display = "flex";
                 } else {
                     product.style.display = "none";
