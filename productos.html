@@ -235,13 +235,14 @@
     <div class="container">
 
         <div class="categories-container">
+            <button class="btn-category active" id="btn-todos" onclick="filterCategory('todos', this)"> Todos</button>
             <button class="btn-category" onclick="filterCategory('sala', this)"> Sala</button>
             <button class="btn-category" onclick="filterCategory('cocina', this)"> Cocina</button>
             <button class="btn-category" onclick="filterCategory('baño', this)"> Baño</button>
             <button class="btn-category" onclick="filterCategory('cuarto', this)"> Cuarto</button>
             <button class="btn-category" onclick="filterCategory('electrodomésticos', this)"> Electrodomésticos</button>
             <button class="btn-category" onclick="filterCategory('ropa', this)"> Ropa</button>
-            <button class="btn-category" onclick="filterCategory('textiles', this)">Textiles</button>
+            <button class="btn-category" onclick="filterCategory('textiles', this)"> Textiles</button>
             <button class="btn-category" onclick="filterCategory('juguetes', this)"> Juguetes</button>
         </div>
 
@@ -318,8 +319,8 @@
     </div>
 
     <script>
-        // URL Sincronizada correctamente con el formato CSV directo de Google Sheets
-        const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1LosBtgt_kjfnVb0PsmFFhk8vxKLJ9l0gZhekEiYZ2yM/export?format=csv';
+        // CORREGIDO: URL Sincronizada con el ID del documento y forzando la lectura de la pestaña inicial (gid=0)
+        const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1LosBtgt_kjfnVb0PsmFFhk8vxKLJ9l0gZhekEiYZ2yM/export?format=csv&gid=0';
 
         const WHATSAPP_NUMBER = "5350168277";       
         const MI_MOVIL_PAGO = "53560235";           
@@ -328,17 +329,21 @@
         let cart = [];
         let total = 0;
         
-        let currentCategory = 'sala'; 
+        // CORREGIDO: Iniciamos mostrando 'todos' los productos para evitar pantallas en blanco si no hay artículos en "sala"
+        let currentCategory = 'todos'; 
 
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('infoMovil').innerText = MI_MOVIL_PAGO;
             document.getElementById('infoTarjeta').innerText = MI_TARJETA_PAGO;
 
             fetch(SHEET_CSV_URL)
-                .then(response => response.text())
+                .then(response => {
+                    if (!response.ok) throw new Error("No se pudo obtener respuesta del servidor.");
+                    return response.text();
+                })
                 .then(data => renderProductsFromCSV(data))
                 .catch(error => {
-                    document.getElementById('loadingMessage').innerText = "Error al cargar los productos. Verifica la conexión o los permisos de tu Hoja de Cálculo.";
+                    document.getElementById('loadingMessage').innerText = "Error al cargar los productos. Asegúrate de que el documento de Google Sheets esté compartido de manera 'Pública' (Cualquier persona con el enlace puede leer).";
                     console.error(error);
                 });
         });
@@ -348,13 +353,16 @@
             const catalog = document.getElementById('catalog');
             document.getElementById('loadingMessage').style.display = 'none';
 
+            let productosCargados = 0;
+
             for (let i = 1; i < lines.length; i++) {
                 if (!lines[i].trim()) continue;
                 
+                // Separador inteligente compatible con celdas que contienen comas internas
                 const columns = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
                 
-                // Validación de seguridad para saltar filas vacías o defectuosas
-                if (!columns[0] || !columns[1] || columns[0].trim() === '""') continue;
+                // CORREGIDO: Validación estricta para evitar errores con líneas residuales de Excel
+                if (columns.length < 2 || !columns[0] || columns[0].trim() === '""' || columns[0].trim() === '') continue;
                 
                 const name = columns[0] ? columns[0].replace(/"/g, '').trim() : "Producto sin nombre";
                 const price = columns[1] ? parseInt(columns[1].replace(/"/g, '').trim()) : 0;
@@ -382,13 +390,12 @@
                     <button class="btn-add" onclick="addToCart('${safeName}', ${price})">Agregar al Carrito</button>
                 `;
                 catalog.appendChild(productCard);
+                productosCargados++;
             }
             
-            const botonInicial = Array.from(document.querySelectorAll('.btn-category'))
-                .find(btn => btn.textContent.trim().toLowerCase() === currentCategory);
-
-            if (botonInicial) {
-                filterCategory(currentCategory, botonInicial);
+            if (productosCargados === 0) {
+                document.getElementById('loadingMessage').style.display = 'block';
+                document.getElementById('loadingMessage').innerText = "No se encontraron productos válidos en el archivo Excel.";
             }
         }
 
@@ -472,7 +479,8 @@
             products.forEach(product => {
                 const category = product.getAttribute('data-category');
                 
-                if (category === currentCategory) {
+                // CORREGIDO: Lógica limpia para el botón "Todos" o coincidencia exacta de categoría
+                if (currentCategory === 'todos' || category === currentCategory) {
                     product.style.display = "flex";
                 } else {
                     product.style.display = "none";
