@@ -17,16 +17,13 @@
         }
         body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 0; background-color: var(--light); color: var(--text-main); }
         
-        /* Reducido el padding vertical de 30px a 18px */
         header { background: linear-gradient(135deg, var(--primary), #134e4a); color: white; padding: 18px 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         header h1 { margin: 0; font-size: 1.6rem; letter-spacing: 0.5px; }
         
-        /* Reducido el padding vertical de 12px a 8px */
         nav { background-color: #1e293b; display: flex; justify-content: center; padding: 8px; }
         nav a { color: #94a3b8; text-decoration: none; margin: 0 15px; font-weight: 600; font-size: 0.95rem; transition: color 0.2s; }
         nav a:hover { color: white; }
         
-        /* Reducido el margen superior e inferior de 20px a 10px */
         .container {
             max-width: 1200px;
             margin: 10px auto;
@@ -34,7 +31,6 @@
             display: block; 
         }
 
-        /* Reducido el padding de separación inferior de 25px a 15px */
         .categories-container {
             display: flex;
             gap: 10px;
@@ -44,7 +40,6 @@
         }
         .categories-container::-webkit-scrollbar { display: none; }
         
-        /* Reducido el padding interno de los botones de categorías */
         .btn-category {
             background-color: white;
             color: #475569;
@@ -61,18 +56,16 @@
         .btn-category:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-1px); }
         .btn-category.active { background-color: var(--primary); border-color: var(--primary); color: white; box-shadow: 0 4px 10px rgba(15,118,110,0.2); }
 
-        /* Espaciado de la cuadrícula ajustado a 18px en PC */
         .products-grid { 
             display: grid; 
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
             gap: 18px; 
         }
 
-        /* Tarjetas súper optimizadas y compactas para teléfonos móviles */
         @media (max-width: 550px) {
             .products-grid {
                 grid-template-columns: repeat(2, 1fr) !important;
-                gap: 8px; /* Espacio entre tarjetas más estrecho */
+                gap: 8px;
             }
             .product-card { padding: 8px; border-radius: 10px; }
             .product-card img { height: 115px; border-radius: 6px; }
@@ -81,19 +74,16 @@
             .btn-add { padding: 8px; font-size: 0.8rem; border-radius: 6px; margin-top: 4px; }
         }
 
-        /* Relleno interno de las tarjetas reducido de 18px a 12px */
         .product-card { background: white; border-radius: 12px; padding: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #edf2f1; text-align: center; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.25s, box-shadow 0.25s; }
         .product-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.06); }
         .product-card img { max-width: 100%; height: 140px; object-fit: cover; border-radius: 10px; cursor: pointer; transition: opacity 0.2s; }
         .product-card img:hover { opacity: 0.9; }
         
-        /* Reducidos márgenes de títulos y precios */
         .product-card h3 { font-size: 1rem; margin: 8px 0 4px 0; color: #334155; font-weight: 600; }
         .price { color: var(--accent); font-weight: 700; font-size: 1.15rem; margin: 2px 0; }
         .btn-add { background-color: var(--primary); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 8px; transition: background-color 0.2s; }
         .btn-add:hover { background-color: var(--primary-dark); }
 
-        /* Botón flotante del carrito */
         .cart-icon-floating {
             position: fixed;
             bottom: 20px;
@@ -130,7 +120,6 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
-        /* Sidebar del carrito compactada */
         .cart-sidebar { 
             position: fixed;
             top: 0;
@@ -166,7 +155,6 @@
 
         .cart-sidebar h3 { font-size: 1.1rem; color: #1e293b; display: flex; justify-content: space-between; background: #f8fafc; padding: 8px; border-radius: 6px; margin: 10px 0; }
         
-        /* Formulario del cliente con menos espacios muertos */
         .customer-form { margin-top: 15px; border-top: 2px solid #f1f5f9; padding-top: 12px; }
         .customer-form h4 { margin: 0 0 10px 0; color: var(--primary-dark); font-size: 1rem; }
         .form-group { margin-bottom: 10px; display: flex; flex-direction: column; }
@@ -175,7 +163,6 @@
         .form-inline { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
         .form-inline label { margin-bottom: 0; cursor: pointer; font-size: 0.85rem; color: #334155; }
 
-        /* Cuadro de cuentas ajustado */
         .payment-info-box { background-color: #fff7ed; border-left: 4px solid var(--accent); padding: 10px; border-radius: 6px; margin-top: 12px; font-size: 0.8rem; }
         .payment-info-box p { margin: 4px 0; color: #c2410c; }
 
@@ -187,7 +174,6 @@
         .transfermovil { background-color: #dc2626; }
         .loading { font-size: 1rem; text-align: center; padding: 30px; color: #64748b; }
 
-        /* MODAL Elegante Compacto */
         .modal {
             display: none;
             position: fixed;
@@ -332,7 +318,8 @@
     </div>
 
     <script>
-        const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1mj4-AHqzVkRfvV5LHlnJzexFbsdNI8KmrBawkzwvnKI/gviz/tq?tqx=out:csv';
+        // URL Sincronizada correctamente con el formato CSV directo de Google Sheets
+        const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1LosBtgt_kjfnVb0PsmFFhk8vxKLJ9l0gZhekEiYZ2yM/export?format=csv';
 
         const WHATSAPP_NUMBER = "5350168277";       
         const MI_MOVIL_PAGO = "53560235";           
@@ -365,6 +352,9 @@
                 if (!lines[i].trim()) continue;
                 
                 const columns = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
+                
+                // Validación de seguridad para saltar filas vacías o defectuosas
+                if (!columns[0] || !columns[1] || columns[0].trim() === '""') continue;
                 
                 const name = columns[0] ? columns[0].replace(/"/g, '').trim() : "Producto sin nombre";
                 const price = columns[1] ? parseInt(columns[1].replace(/"/g, '').trim()) : 0;
