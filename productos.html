@@ -317,6 +317,7 @@
     </div>
 
     <script>
+        // URL de exportación oficial en formato CSV
         const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1LosBtgt_kjfnVb0PsmFFhk8vxKLJ9l0gZhekEiYZ2yM/export?format=csv';
 
         const WHATSAPP_NUMBER = "5350168277";       
@@ -346,6 +347,25 @@
                 });
         });
 
+        // Función inteligente para separar por comas ignorando las que están dentro de comillas
+        function parseCSVLine(text) {
+            let p = '', c = '', r = [];
+            let q = false;
+            for (let i = 0; i < text.length; i++) {
+                c = text[i];
+                if (c === '"') {
+                    q = !q; 
+                } else if (c === ',' && !q) {
+                    r.push(p.trim());
+                    p = '';
+                } else {
+                    p += c;
+                }
+            }
+            r.push(p.trim());
+            return r;
+        }
+
         function renderProductsFromCSV(csvText) {
             const lines = csvText.split(/\r?\n/);
             const catalog = document.getElementById('catalog');
@@ -353,25 +373,25 @@
             let productosCargados = 0;
             let htmlContenido = ""; 
 
+            // Empezamos en 1 para omitir los encabezados del Excel
             for (let i = 1; i < lines.length; i++) {
                 const row = lines[i].trim();
                 if (!row) continue; 
                 
-                // Expresión regular avanzada para separar por comas de forma segura
-                const columns = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || row.split(',');
+                const columns = parseCSVLine(row);
                 
                 if (!columns || columns.length < 2) continue;
                 
-                const name = columns[0] ? columns[0].replace(/"/g, '').trim() : "";
-                const price = columns[1] ? parseInt(columns[1].replace(/"/g, '').trim()) : 0;
-                const image = columns[2] ? columns[2].replace(/"/g, '').trim() : "https://via.placeholder.com/150";
+                const name = columns[0] ? columns[0].replace(/^"|"$/g, '').trim() : "";
+                const price = columns[1] ? parseInt(columns[1].replace(/[^0-9]/g, '')) : 0;
+                const image = columns[2] ? columns[2].replace(/^"|"$/g, '').trim() : "https://via.placeholder.com/150";
                 
-                let description = columns[3] ? columns[3].replace(/"/g, '').trim() : "";
+                let description = columns[3] ? columns[3].replace(/^"|"$/g, '').trim() : "";
                 if (!description) {
                     description = `Producto de alta calidad para el confort de tu hogar. Disponible para entrega inmediata.`;
                 }
 
-                const category = columns[4] ? columns[4].replace(/"/g, '').trim().toLowerCase() : "variados";
+                const category = columns[4] ? columns[4].replace(/^"|"$/g, '').trim().toLowerCase() : "variados";
 
                 if (!name) continue; 
 
@@ -437,6 +457,7 @@
             }
         });
 
+        // Control del Carrito Lateral
         function toggleCart() {
             const sidebar = document.getElementById('cartSidebar');
             sidebar.classList.toggle('open');
@@ -481,6 +502,7 @@
             updateCartUI();
         }
 
+        // Filtro interactivo de Categorías
         function filterCategory(categoryName, buttonElement) {
             currentCategory = categoryName.toLowerCase();
             
@@ -500,6 +522,7 @@
             });
         }
 
+        // Enviar pedido estructurado hacia WhatsApp
         function processPayment(method) {
             if(cart.length === 0) {
                 alert("El carrito está vacío.");
