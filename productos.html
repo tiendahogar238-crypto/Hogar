@@ -315,8 +315,9 @@
             </div>
         </div>
     </div>
+
     <script>
-        const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1LosBtgt_kjfnVb0PsmFFhk8vxKLJ9l0gZhekEiYZ2yM/export?format=csv&gid=0';
+        const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1LosBtgt_kjfnVb0PsmFFhk8vxKLJ9l0gZhekEiYZ2yM/export?format=csv';
 
         const WHATSAPP_NUMBER = "5350168277";       
         const MI_MOVIL_PAGO = "53560235";           
@@ -324,7 +325,6 @@
 
         let cart = [];
         let total = 0;
-        
         let currentCategory = 'sala'; 
 
         window.addEventListener('DOMContentLoaded', () => {
@@ -341,27 +341,28 @@
                     applyInitialFilter();
                 })
                 .catch(error => {
-                    document.getElementById('loadingMessage').innerText = "Error al cargar los productos. Asegúrate de que el documento de Google Sheets esté compartido de manera 'Pública'.";
+                    document.getElementById('loadingMessage').innerText = "Error al cargar los productos. Asegúrate de que el documento de Google Sheets esté compartido como 'Cualquier persona con el enlace puede ver'.";
                     console.error(error);
                 });
         });
 
         function renderProductsFromCSV(csvText) {
-            const lines = csvText.split('\n');
+            const lines = csvText.split(/\r?\n/);
             const catalog = document.getElementById('catalog');
-            document.getElementById('loadingMessage').style.display = 'none';
-
+            
             let productosCargados = 0;
+            let htmlContenido = ""; 
 
             for (let i = 1; i < lines.length; i++) {
-                if (!lines[i].trim()) continue;
+                const row = lines[i].trim();
+                if (!row) continue; 
                 
-                // ARREGLADO: Separador por punto y coma (;) para configuraciones en español de Google Sheets
-                const columns = lines[i].split(';');
+                // Expresión regular avanzada para separar por comas de forma segura
+                const columns = row.match(/(".*?"|[^",\s]+)(?=\s*,|\s*$)/g) || row.split(',');
                 
-                if (columns.length < 2 || !columns[0] || columns[0].trim() === '""' || columns[0].trim() === '') continue;
+                if (!columns || columns.length < 2) continue;
                 
-                const name = columns[0] ? columns[0].replace(/"/g, '').trim() : "Producto sin nombre";
+                const name = columns[0] ? columns[0].replace(/"/g, '').trim() : "";
                 const price = columns[1] ? parseInt(columns[1].replace(/"/g, '').trim()) : 0;
                 const image = columns[2] ? columns[2].replace(/"/g, '').trim() : "https://via.placeholder.com/150";
                 
@@ -372,32 +373,35 @@
 
                 const category = columns[4] ? columns[4].replace(/"/g, '').trim().toLowerCase() : "variados";
 
+                if (!name) continue; 
+
                 const safeName = name.replace(/'/g, "\\'");
                 const safeDesc = description.replace(/'/g, "\\'").replace(/\r?\n|\r/g, " ");
 
-                const productCard = document.createElement('div');
-                productCard.className = 'product-card';
-                productCard.setAttribute('data-name', name.toLowerCase());
-                productCard.setAttribute('data-category', category); 
-                
-                productCard.innerHTML = `
-                    <img src="${image}" alt="${name}" onclick="openModal('${safeName}', ${price}, '${image}', '${safeDesc}')">
-                    <h3>${name}</h3>
-                    <p class="price">$${price} CUP</p>
-                    <button class="btn-add" onclick="addToCart('${safeName}', ${price})">Agregar al Carrito</button>
+                htmlContenido += `
+                    <div class="product-card" data-name="${name.toLowerCase()}" data-category="${category}">
+                        <img src="${image}" alt="${name}" onclick="openModal('${safeName}', ${price}, '${image}', '${safeDesc}')">
+                        <h3>${name}</h3>
+                        <p class="price">$${price} CUP</p>
+                        <button class="btn-add" onclick="addToCart('${safeName}', ${price})">Agregar al Carrito</button>
+                    </div>
                 `;
-                catalog.appendChild(productCard);
                 productosCargados++;
             }
             
-            if (productosCargados === 0) {
+            if (productosCargados > 0) {
+                document.getElementById('loadingMessage').style.display = 'none';
+                catalog.innerHTML = htmlContenido; 
+            } else {
                 document.getElementById('loadingMessage').style.display = 'block';
-                document.getElementById('loadingMessage').innerText = "No se encontraron productos válidos.";
+                document.getElementById('loadingMessage').innerText = "No se encontraron productos válidos. Revisa las columnas de tu Google Sheets.";
             }
         }
 
         function applyInitialFilter() {
             const products = document.querySelectorAll('.product-card');
+            if(products.length === 0) return;
+            
             products.forEach(product => {
                 const category = product.getAttribute('data-category');
                 if (category === currentCategory) {
