@@ -3,176 +3,278 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tienda Hogar - Productos de Google Sheets</title>
+    <title>Tienda Hogar - Panel de Productos</title>
     
     <link rel="icon" href="favicon.png" type="image/png">
         
     <style>
         :root {
-            --primary: #0f766e;        /* Verde esmeralda refrescante y profesional */
-            --primary-dark: #115e59;   /* Verde más oscuro para botones activos */
-            --accent: #f97316;         /* Coral/Naranja moderno para destacar precios */
-            --light: #f4f7f6;          /* Fondo suave texturizado que no agota la vista */
-            --text-main: #1e293b;      /* Texto oscuro elegante */
-        }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; padding: 0; background-color: var(--light); color: var(--text-main); }
-        
-        header { background: linear-gradient(135deg, var(--primary), #134e4a); color: white; padding: 18px 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        header h1 { margin: 0; font-size: 1.6rem; letter-spacing: 0.5px; }
-        
-        nav { background-color: #1e293b; display: flex; justify-content: center; padding: 8px; }
-        nav a { color: #94a3b8; text-decoration: none; margin: 0 15px; font-weight: 600; font-size: 0.95rem; transition: color 0.2s; }
-        nav a:hover { color: white; }
-        
-        .container {
-            max-width: 1200px;
-            margin: 10px auto;
-            padding: 0 15px;
-            display: block; 
+            /* Paleta de colores inspirada exactamente en Soluciones 360 */
+            --bg-main: #f4f6f9;         /* Fondo gris claro e higiénico de la app */
+            --panel-dark: #071e3d;      /* Azul noche profundo del menú lateral */
+            --panel-active: #0b2f5c;    /* Azul un poco más claro para elementos seleccionados */
+            --action-green: #00cc44;    /* Verde brillante de los botones de acción y estado */
+            --action-green-hover: #00aa37;
+            --text-dark: #1e293b;       /* Texto principal */
+            --text-muted: #64748b;     /* Texto secundario */
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
         }
 
-        .categories-container {
+        body { 
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: var(--bg-main); 
+            color: var(--text-dark);
             display: flex;
-            gap: 10px;
-            overflow-x: auto;
-            padding: 8px 0 15px 0;
-            scrollbar-width: none;
+            flex-direction: column;
+            min-height: 100vh;
         }
-        .categories-container::-webkit-scrollbar { display: none; }
         
-        .btn-category {
-            background-color: white;
-            color: #475569;
-            border: 1px solid #e2e8f0;
-            padding: 8px 16px;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            cursor: pointer;
-            white-space: nowrap;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            transition: all 0.25s ease;
+        /* Encabezado con estilo de Barra de Estado Premium sin el logo </> */
+        header { 
+            background-color: white; 
+            color: var(--panel-dark); 
+            padding: 15px 25px; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+            border-bottom: 1px solid #e2e8f0;
         }
-        .btn-category:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-1px); }
-        .btn-category.active { background-color: var(--primary); border-color: var(--primary); color: white; box-shadow: 0 4px 10px rgba(15,118,110,0.2); }
+        header h1 { 
+            margin: 0; 
+            font-size: 1.4rem; 
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Navegación sutil superior */
+        nav { display: flex; gap: 15px; }
+        nav a { 
+            color: var(--text-muted); 
+            text-decoration: none; 
+            font-weight: 600; 
+            font-size: 0.9rem; 
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.2s; 
+        }
+        nav a:hover { color: var(--panel-dark); background-color: #e2e8f0; }
+        
+        /* Layout de doble panel inspirado en la captura */
+        .main-layout {
+            display: flex;
+            flex: 1;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+            box-sizing: border-box;
+        }
 
+        /* Panel Izquierdo: Menú de Categorías (Imitando el menú azul de Soluciones 360) */
+        .sidebar-menu {
+            width: 260px;
+            background-color: var(--panel-dark);
+            padding: 20px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            box-sizing: border-box;
+        }
+
+        @media (max-width: 900px) {
+            .main-layout { flex-direction: column; }
+            .sidebar-menu { width: 100%; padding: 10px; flex-direction: row; overflow-x: auto; scrollbar-width: none; }
+            .sidebar-menu::-webkit-scrollbar { display: none; }
+        }
+
+        .btn-category {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .btn-category:hover { color: white; background-color: var(--panel-active); }
+        .btn-category.active { 
+            background-color: var(--panel-active); 
+            color: white; 
+            font-weight: 600;
+            position: relative;
+        }
+        .btn-category.active::after {
+            content: '';
+            position: absolute;
+            right: 10px;
+            width: 6px;
+            height: 6px;
+            background-color: var(--action-green);
+            border-radius: 50%;
+        }
+
+        /* Contenedor del Catálogo Principal */
+        .content-workspace {
+            flex: 1;
+            padding: 25px;
+            box-sizing: border-box;
+        }
+        @media (max-width: 550px) { .content-workspace { padding: 12px; } }
+
+        /* Cuadrícula de productos limpia con tarjetas redondeadas */
         .products-grid { 
             display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
-            gap: 18px; 
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); 
+            gap: 20px; 
         }
 
         @media (max-width: 550px) {
             .products-grid {
                 grid-template-columns: repeat(2, 1fr) !important;
-                gap: 8px;
+                gap: 10px;
             }
-            .product-card { padding: 8px; border-radius: 10px; }
-            .product-card img { height: 115px; border-radius: 6px; }
-            .product-card h3 { font-size: 0.85rem; margin: 4px 0; max-height: 2.4em; overflow: hidden; }
-            .price { font-size: 1rem; margin: 2px 0; }
-            .btn-add { padding: 8px; font-size: 0.8rem; border-radius: 6px; margin-top: 4px; }
+            .product-card { padding: 10px; border-radius: 12px; }
+            .product-card img { height: 120px; }
+            .product-card h3 { font-size: 0.9rem; }
+            .price { font-size: 1.05rem; }
         }
-        .product-card { background: white; border-radius: 12px; padding: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #edf2f1; text-align: center; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.25s, box-shadow 0.25s; }
-        .product-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0,0,0,0.06); }
-        .product-card img { max-width: 100%; height: 140px; object-fit: cover; border-radius: 10px; cursor: pointer; transition: opacity 0.2s; }
-        .product-card img:hover { opacity: 0.9; }
-        
-        .product-card h3 { font-size: 1rem; margin: 8px 0 4px 0; color: #334155; font-weight: 600; }
-        .price { color: var(--accent); font-weight: 700; font-size: 1.15rem; margin: 2px 0; }
-        .btn-add { background-color: var(--primary); color: white; border: none; padding: 10px; border-radius: 8px; font-weight: 600; cursor: pointer; margin-top: 8px; transition: background-color 0.2s; }
-        .btn-add:hover { background-color: var(--primary-dark); }
 
+        .product-card { 
+            background: white; 
+            border-radius: 16px; 
+            padding: 15px; 
+            box-shadow: var(--card-shadow); 
+            border: 1px solid #eef2f6; 
+            text-align: center; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between; 
+            transition: transform 0.25s, box-shadow 0.25s; 
+        }
+        .product-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(0,0,0,0.06); }
+        .product-card img { max-width: 100%; height: 160px; object-fit: cover; border-radius: 12px; cursor: pointer; }
+        
+        .product-card h3 { font-size: 1.05rem; margin: 12px 0 6px 0; color: var(--text-dark); font-weight: 600; }
+        .price { color: var(--panel-dark); font-weight: 700; font-size: 1.2rem; margin: 4px 0; }
+        
+        /* Botones estilo Soluciones 360 (Verde Inteligente) */
+        .btn-add { 
+            background-color: var(--action-green); 
+            color: white; 
+            border: none; 
+            padding: 10px; 
+            border-radius: 10px; 
+            font-weight: 600; 
+            font-size: 0.9rem;
+            cursor: pointer; 
+            margin-top: 10px; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.2s; 
+        }
+        .btn-add:hover { background-color: var(--action-green-hover); }
+
+        /* Icono flotante del Carrito */
         .cart-icon-floating {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: var(--primary);
+            bottom: 25px;
+            right: 25px;
+            background-color: var(--panel-dark);
             color: white;
-            width: 55px;
-            height: 55px;
+            width: 60px;
+            height: 60px;
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.5rem;
-            box-shadow: 0 6px 20px rgba(15,118,110,0.4);
+            font-size: 1.4rem;
+            box-shadow: 0 8px 25px rgba(7, 30, 61, 0.3);
             cursor: pointer;
             z-index: 1000;
-            transition: transform 0.2s, background-color 0.2s;
+            transition: transform 0.2s;
         }
-        .cart-icon-floating:hover { transform: scale(1.08); background-color: var(--primary-dark); }
+        .cart-icon-floating:hover { transform: scale(1.05); }
         
         .cart-badge {
             position: absolute;
-            top: -2px;
-            right: -2px;
-            background-color: var(--accent);
+            top: 0;
+            right: 0;
+            background-color: var(--action-green);
             color: white;
             border-radius: 50%;
-            padding: 3px 7px;
+            padding: 3px 8px;
             font-size: 0.75rem;
             font-weight: 700;
-            min-width: 12px;
-            text-align: center;
-            display: none; 
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
 
+        /* Sidebar del Carrito */
         .cart-sidebar { 
             position: fixed;
             top: 0;
-            right: -360px; 
-            width: 310px;
+            right: -380px; 
+            width: 340px;
             height: 100%;
             background: white; 
-            padding: 18px; 
-            box-shadow: -6px 0 25px rgba(0,0,0,0.08); 
+            padding: 20px; 
+            box-shadow: -10px 0 35px rgba(0,0,0,0.05); 
             z-index: 2500;
             overflow-y: auto;
             box-sizing: border-box;
             transition: right 0.35s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .cart-sidebar.open { right: 0; }
-        .close-cart { font-size: 1.6rem; font-weight: bold; color: #94a3b8; cursor: pointer; float: right; transition: color 0.2s; }
-        .close-cart:hover { color: #334155; }
-        .cart-sidebar h2 { color: var(--primary); font-size: 1.25rem; margin-top: 0; margin-bottom: 12px; border-bottom: 2px solid #f1f5f9; padding-bottom: 6px; }
+        .close-cart { font-size: 1.6rem; font-weight: bold; color: var(--text-muted); cursor: pointer; float: right; }
+        .cart-sidebar h2 { color: var(--panel-dark); font-size: 1.3rem; margin-top: 0; margin-bottom: 15px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
 
-        .cart-items { list-style: none; padding: 0; max-height: 180px; overflow-y: auto; margin-bottom: 15px; }
-        
+        .cart-items { list-style: none; padding: 0; margin-bottom: 15px; }
         .cart-item { 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
-            margin-bottom: 8px; 
-            font-size: 0.85rem; 
+            margin-bottom: 10px; 
+            font-size: 0.9rem; 
             border-bottom: 1px dashed #e2e8f0; 
-            padding-bottom: 6px; 
+            padding-bottom: 8px; 
         }
-        .cart-item span { color: #334155; padding-right: 8px; line-height: 1.2; }
-        .btn-remove-item { background: none; border: none; color: #ef4444; font-size: 1rem; font-weight: bold; cursor: pointer; padding: 1px 4px; border-radius: 4px; }
+        .btn-remove-item { background: none; border: none; color: #ef4444; font-size: 1.1rem; cursor: pointer; }
 
-        .cart-sidebar h3 { font-size: 1.1rem; color: #1e293b; display: flex; justify-content: space-between; background: #f8fafc; padding: 8px; border-radius: 6px; margin: 10px 0; }
+        .cart-sidebar h3 { font-size: 1.1rem; color: var(--panel-dark); display: flex; justify-content: space-between; background: #f8fafc; padding: 10px; border-radius: 8px; margin: 15px 0; border: 1px solid #e2e8f0; }
         
-        .customer-form { margin-top: 15px; border-top: 2px solid #f1f5f9; padding-top: 12px; }
-        .customer-form h4 { margin: 0 0 10px 0; color: var(--primary-dark); font-size: 1rem; }
-        .form-group { margin-bottom: 10px; display: flex; flex-direction: column; }
-        .form-group label { font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; color: #475569; }
-        .form-group input { padding: 8px; border: 1px solid #cbd5e1; border-radius: 6px; font-family: inherit; font-size: 0.85rem; outline: none; }
+        /* Formularios Modernos e Inputs Limpios */
+        .customer-form { margin-top: 20px; border-top: 2px solid #f1f5f9; padding-top: 15px; }
+        .customer-form h4 { margin: 0 0 12px 0; color: var(--panel-dark); font-size: 1rem; }
+        .form-group { margin-bottom: 12px; display: flex; flex-direction: column; }
+        .form-group label { font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; color: var(--text-muted); }
+        .form-group input, .form-group select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-family: inherit; font-size: 0.88rem; outline: none; background: white; transition: border-color 0.2s; }
+        .form-group input:focus, .form-group select:focus { border-color: var(--panel-dark); }
         .form-inline { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
-        .form-inline label { margin-bottom: 0; cursor: pointer; font-size: 0.85rem; color: #334155; }
 
-        .payment-info-box { background-color: #fff7ed; border-left: 4px solid var(--accent); padding: 10px; border-radius: 6px; margin-top: 12px; font-size: 0.8rem; }
-        .payment-info-box p { margin: 4px 0; color: #c2410c; }
+        .payment-info-box { background-color: #f0fdf4; border-left: 4px solid var(--action-green); padding: 12px; border-radius: 8px; margin-top: 15px; font-size: 0.8rem; }
+        .payment-info-box p { margin: 4px 0; color: var(--panel-dark); }
 
-        .payment-methods { margin-top: 15px; border-top: 2px solid #f1f5f9; padding-top: 12px; }
-        .payment-methods h4 { margin: 0 0 8px 0; color: #475569; font-size: 0.9rem; }
-        .btn-pay { display: block; width: 100%; padding: 10px; margin: 6px 0; border: none; border-radius: 6px; font-weight: 700; font-size: 0.9rem; cursor: pointer; color: white; text-align: center; text-decoration: none; }
-        .btn-pay:hover { opacity: 0.9; }
+        .payment-methods { margin-top: 20px; border-top: 2px solid #f1f5f9; padding-top: 15px; }
+        .btn-pay { display: block; width: 100%; padding: 12px; margin: 8px 0; border: none; border-radius: 8px; font-weight: 700; font-size: 0.9rem; cursor: pointer; color: white; text-align: center; text-decoration: none; }
         .enzona { background-color: #2563eb; }
         .transfermovil { background-color: #dc2626; }
-        .loading { font-size: 1rem; text-align: center; padding: 30px; color: #64748b; }
+        
+        .loading { font-size: 1rem; text-align: center; padding: 40px; color: var(--text-muted); font-weight: 500; }
 
+        /* Modal de detalles */
         .modal {
             display: none;
             position: fixed;
@@ -181,126 +283,142 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(15, 23, 42, 0.6);
+            background-color: rgba(7, 30, 61, 0.4);
             backdrop-filter: blur(4px);
             justify-content: center;
             align-items: center;
-            padding: 12px;
+            padding: 15px;
             box-sizing: border-box;
         }
         .modal-content {
             background-color: white;
-            padding: 20px;
-            border-radius: 16px;
+            padding: 24px;
+            border-radius: 20px;
             max-width: 600px;
             width: 100%;
             position: relative;
             display: flex;
-            gap: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-            animation: fadeIn 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            gap: 25px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.1);
+            animation: fadeIn 0.2s ease-out;
         }
         .modal-left { flex: 1; display: flex; align-items: center; justify-content: center; }
-        .modal-left img { max-width: 100%; max-height: 240px; object-fit: contain; border-radius: 10px; }
+        .modal-left img { max-width: 100%; max-height: 250px; object-fit: contain; border-radius: 12px; }
         .modal-right { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-        .modal-right h2 { margin: 0 0 6px 0; font-size: 1.25rem; color: #1e293b; font-weight: 700; }
-        .modal-right .modal-price { font-size: 1.2rem; color: var(--accent); font-weight: 700; margin-bottom: 8px; }
-        .modal-right .modal-desc { font-size: 0.9rem; color: #475569; line-height: 1.4; margin-bottom: 15px; white-space: pre-line; }
+        .modal-right h2 { margin: 0 0 6px 0; font-size: 1.3rem; color: var(--panel-dark); font-weight: 700; }
+        .modal-right .modal-price { font-size: 1.25rem; color: var(--action-green); font-weight: 700; margin-bottom: 10px; }
+        .modal-right .modal-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 15px; }
         
-        .close-modal { position: absolute; top: 8px; right: 14px; font-size: 24px; font-weight: bold; color: #94a3b8; cursor: pointer; }
+        .close-modal { position: absolute; top: 12px; right: 16px; font-size: 24px; font-weight: bold; color: var(--text-muted); cursor: pointer; }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
         }
 
         @media (max-width: 600px) {
-            .modal-content { flex-direction: column; text-align: center; padding: 20px; gap: 10px; }
-            .modal-left img { max-height: 150px; }
+            .modal-content { flex-direction: column; text-align: center; padding: 20px; gap: 15px; }
+            .modal-left img { max-height: 160px; }
         }
     </style>
 </head>
 <body>
 
+    <!-- Header Estilo App POS sin el símbolo </> -->
     <header>
         <h1>Tienda Hogar</h1>
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="productos.html" style="color: var(--panel-dark); background-color: #f1f5f9;">Productos</a>
+        </nav>
     </header>
 
-    <nav>
-        <a href="index.html">Inicio</a>
-        <a href="productos.html">Productos</a>
-    </nav>
-
-    <div class="container">
-
-        <div class="categories-container">
-            <button class="btn-category active" onclick="filterCategory('sala', this)"> Sala</button>
-            <button class="btn-category" onclick="filterCategory('cocina', this)"> Cocina</button>
-            <button class="btn-category" onclick="filterCategory('baño', this)"> Baño</button>
-            <button class="btn-category" onclick="filterCategory('cuarto', this)"> Cuarto</button>
-            <button class="btn-category" onclick="filterCategory('electrodomésticos', this)"> Electrodomésticos</button>
-            <button class="btn-category" onclick="filterCategory('ropa', this)"> Ropa</button>
-            <button class="btn-category" onclick="filterCategory('textiles', this)"> Textiles</button>
-            <button class="btn-category" onclick="filterCategory('juguetes', this)"> Juguetes</button>
-        </div>
-
-        <main class="products-grid" id="catalog">
-            <div class="loading" id="loadingMessage">Cargando productos desde Google Sheets...</div>
-        </main>
+    <!-- Layout Dividido Estilo Soluciones 360 -->
+    <div class="main-layout">
         
-        <div class="cart-icon-floating" onclick="toggleCart()">
-            🛒
-            <span class="cart-badge" id="cartBadge">0</span>
-        </div>
-
-        <aside class="cart-sidebar" id="cartSidebar">
-            <span class="close-cart" onclick="toggleCart()">&times;</span>
-            <h2>🛒 Tu Carrito</h2>
-            <ul id="cartItems" class="cart-items">
-                <p id="emptyMessage" style="color: #64748b; text-align: center; padding: 20px 0;">El carrito está vacío</p>
-            </ul>
-            <h3><span>Total:</span> <span>$<span id="cartTotal">0</span> CUP</span></h3>
-
-            <div class="customer-form">
-                <h4>Datos de Entrega:</h4>
-                <div class="form-group">
-                    <label for="custName">Nombre Completo *</label>
-                    <input type="text" id="custName" placeholder="Ej. Juan Pérez">
-                </div>
-                <div class="form-group">
-                    <label for="custPhone">Teléfono de Contacto *</label>
-                    <input type="tel" id="custPhone" placeholder="Ej. +53 51234567">
-                </div>
-                <div class="form-group">
-                    <label for="custAddress">Dirección Completa *</label>
-                    <input type="text" id="custAddress" placeholder="Calle, No., entre calles, localidad">
-                </div>
-                <div class="form-group">
-                    <label>¿Necesita Mensajería?</label>
-                    <div class="form-inline">
-                        <input type="radio" id="msgSi" name="messaging" value="Sí" checked>
-                        <label for="msgSi">Sí</label>
-                        <input type="radio" id="msgNo" name="messaging" value="No">
-                        <label for="msgNo">No (Recojo en tienda)</label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="payment-info-box">
-                <strong>📌 Cuentas de la Tienda:</strong>
-                <p>📲 <b>Móvil / EnZona:</b> <span id="infoMovil">Cargando...</span></p>
-                <p>💳 <b>Tarjeta (Transfermóvil):</b> <span id="infoTarjeta">Cargando...</span></p>
-            </div>
-
-            <div class="payment-methods">
-                <h4>Método de Pago:</h4>
-                <button class="btn-pay enzona" onclick="processPayment('EnZona')">Pagar con EnZona</button>
-                <button class="btn-pay transfermovil" onclick="processPayment('Transfermóvil')">Pagar con Transfermóvil</button>
-                <button class="btn-pay efectivo" style="background-color: #10b981;" onclick="processPayment('Efectivo')">Pagar en Efectivo</button>
-            </div>
+        <!-- Panel Izquierdo: Menú Nomenclador de Categorías (Inicia directo en Sala) -->
+        <aside class="sidebar-menu">
+            <button class="btn-category active" onclick="filterCategory('sala', this)">🛋️ Sala</button>
+            <button class="btn-category" onclick="filterCategory('cocina', this)">🍳 Cocina</button>
+            <button class="btn-category" onclick="filterCategory('baño', this)">🚿 Baño</button>
+            <button class="btn-category" onclick="filterCategory('cuarto', this)">🛏️ Cuarto</button>
+            <button class="btn-category" onclick="filterCategory('electrodomésticos', this)">🔌 Electrodomésticos</button>
+            <button class="btn-category" onclick="filterCategory('ropa', this)">👕 Ropa</button>
+            <button class="btn-category" onclick="filterCategory('textiles', this)">🧵 Textiles</button>
+            <button class="btn-category" onclick="filterCategory('juguetes', this)">🧸 Juguetes</button>
         </aside>
+
+        <!-- Espacio de Trabajo Principal: Cuadrícula de Productos -->
+        <main class="content-workspace">
+            <div class="products-grid" id="catalog">
+                <div class="loading" id="loadingMessage">Sincronizando base de datos de inventario...</div>
+            </div>
+        </main>
+
+    </div>
+    
+    <!-- Carrito Flotante Estilo Panel de Compras -->
+    <div class="cart-icon-floating" onclick="toggleCart()">
+        🛒
+        <span class="cart-badge" id="cartBadge" style="display: none;">0</span>
     </div>
 
+    <!-- Menú del Carrito Desplegable -->
+    <aside class="cart-sidebar" id="cartSidebar">
+        <span class="close-cart" onclick="toggleCart()">&times;</span>
+        <h2>🧾 Control de Orden</h2>
+        <ul id="cartItems" class="cart-items">
+            <p id="emptyMessage" style="color: var(--text-muted); text-align: center; padding: 25px 0;">El carrito de ventas está vacío</p>
+        </ul>
+        <h3><span>Total General:</span> <span>$<span id="cartTotal">0</span> CUP</span></h3>
+
+        <div class="customer-form">
+            <h4>Datos de Entrega y Facturación:</h4>
+            <div class="form-group">
+                <label for="custName">Nombre del Cliente *</label>
+                <input type="text" id="custName" placeholder="Nombre completo">
+            </div>
+            <div class="form-group">
+                <label for="custPhone">Teléfono de Contacto *</label>
+                <input type="tel" id="custPhone" placeholder="Ej. +53 51234567">
+            </div>
+            <div class="form-group">
+                <label for="custAddress">Dirección de Destino *</label>
+                <input type="text" id="custAddress" placeholder="Dirección exacta de entrega">
+            </div>
+            <div class="form-group">
+                <label for="custAlmacen">Almacén de Despacho *</label>
+                <select id="custAlmacen">
+                    <option value="Almacén Principal">Almacén Principal</option>
+                    <option value="Almacén Secundario">Almacén Secundario</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Método de Distribución</label>
+                <div class="form-inline">
+                    <input type="radio" id="msgSi" name="messaging" value="Sí" checked>
+                    <label for="msgSi">Con Mensajería</label>
+                    <input type="radio" id="msgNo" name="messaging" value="No">
+                    <label for="msgNo">Retiro en Punto de Venta</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="payment-info-box">
+            <strong>📌 Cuentas de la Tienda:</strong>
+            <p>📲 <b>Móvil / EnZona:</b> <span id="infoMovil">Cargando...</span></p>
+            <p>💳 <b>Tarjeta (Transfermóvil):</b> <span id="infoTarjeta">Cargando...</span></p>
+        </div>
+
+        <div class="payment-methods">
+            <h4>Confirmar Factura vía:</h4>
+            <button class="btn-pay enzona" onclick="processPayment('EnZona')">Proceder con EnZona</button>
+            <button class="btn-pay transfermovil" onclick="processPayment('Transfermóvil')">Proceder con Transfermóvil</button>
+            <button class="btn-pay efectivo" style="background-color: var(--action-green);" onclick="processPayment('Efectivo')">Pago en Efectivo</button>
+        </div>
+    </aside>
+
+    <!-- Modal Detalle de Producto -->
     <div id="productModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeModal()">&times;</span>
@@ -310,14 +428,13 @@
             <div class="modal-right">
                 <h2 id="modalTitle">Nombre</h2>
                 <p id="modalPrice" class="modal-price">$0 CUP</p>
-                <p id="modalDesc" class="modal-desc">Detalles del producto...</p> 
+                <p id="modalDesc" class="modal-desc">Detalles...</p> 
                 <div id="modalActionBtn"></div>
             </div>
         </div>
     </div>
 
     <script>
-        // URL de exportación oficial en formato CSV
         const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/1LosBtgt_kjfnVb0PsmFFhk8vxKLJ9l0gZhekEiYZ2yM/export?format=csv';
 
         const WHATSAPP_NUMBER = "5350168277";       
@@ -326,7 +443,7 @@
 
         let cart = [];
         let total = 0;
-        let currentCategory = 'sala'; 
+        let currentCategory = 'sala'; // Inicia directamente en sala
 
         window.addEventListener('DOMContentLoaded', () => {
             document.getElementById('infoMovil').innerText = MI_MOVIL_PAGO;
@@ -334,7 +451,7 @@
 
             fetch(SHEET_CSV_URL)
                 .then(response => {
-                    if (!response.ok) throw new Error("No se pudo obtener respuesta del servidor.");
+                    if (!response.ok) throw new Error("Error de conexión");
                     return response.text();
                 })
                 .then(data => {
@@ -342,25 +459,19 @@
                     applyInitialFilter();
                 })
                 .catch(error => {
-                    document.getElementById('loadingMessage').innerText = "Error al cargar los productos. Asegúrate de que el documento de Google Sheets esté compartido como 'Cualquier persona con el enlace puede ver'.";
+                    document.getElementById('loadingMessage').innerText = "Error al sincronizar inventario. Verifique los permisos del archivo.";
                     console.error(error);
                 });
         });
 
-        // Función inteligente para separar por comas ignorando las que están dentro de comillas
         function parseCSVLine(text) {
             let p = '', c = '', r = [];
             let q = false;
             for (let i = 0; i < text.length; i++) {
                 c = text[i];
-                if (c === '"') {
-                    q = !q; 
-                } else if (c === ',' && !q) {
-                    r.push(p.trim());
-                    p = '';
-                } else {
-                    p += c;
-                }
+                if (c === '"') { q = !q; } 
+                else if (c === ',' && !q) { r.push(p.trim()); p = ''; } 
+                else { p += c; }
             }
             r.push(p.trim());
             return r;
@@ -369,28 +480,19 @@
         function renderProductsFromCSV(csvText) {
             const lines = csvText.split(/\r?\n/);
             const catalog = document.getElementById('catalog');
-            
             let productosCargados = 0;
             let htmlContenido = ""; 
 
-            // Empezamos en 1 para omitir los encabezados del Excel
             for (let i = 1; i < lines.length; i++) {
                 const row = lines[i].trim();
                 if (!row) continue; 
-                
                 const columns = parseCSVLine(row);
-                
                 if (!columns || columns.length < 2) continue;
                 
                 const name = columns[0] ? columns[0].replace(/^"|"$/g, '').trim() : "";
                 const price = columns[1] ? parseInt(columns[1].replace(/[^0-9]/g, '')) : 0;
                 const image = columns[2] ? columns[2].replace(/^"|"$/g, '').trim() : "https://via.placeholder.com/150";
-                
-                let description = columns[3] ? columns[3].replace(/^"|"$/g, '').trim() : "";
-                if (!description) {
-                    description = `Producto de alta calidad para el confort de tu hogar. Disponible para entrega inmediata.`;
-                }
-
+                let description = columns[3] ? columns[3].replace(/^"|"$/g, '').trim() : "Producto controlado e indexado en sistema. Disponible para salida inmediata.";
                 const category = columns[4] ? columns[4].replace(/^"|"$/g, '').trim().toLowerCase() : "variados";
 
                 if (!name) continue; 
@@ -403,7 +505,7 @@
                         <img src="${image}" alt="${name}" onclick="openModal('${safeName}', ${price}, '${image}', '${safeDesc}')">
                         <h3>${name}</h3>
                         <p class="price">$${price} CUP</p>
-                        <button class="btn-add" onclick="addToCart('${safeName}', ${price})">Agregar al Carrito</button>
+                        <button class="btn-add" onclick="addToCart('${safeName}', ${price})">🛒 Añadir al Pedido</button>
                     </div>
                 `;
                 productosCargados++;
@@ -413,15 +515,13 @@
                 document.getElementById('loadingMessage').style.display = 'none';
                 catalog.innerHTML = htmlContenido; 
             } else {
-                document.getElementById('loadingMessage').style.display = 'block';
-                document.getElementById('loadingMessage').innerText = "No se encontraron productos válidos. Revisa las columnas de tu Google Sheets.";
+                document.getElementById('loadingMessage').innerText = "Inventario vacío. Compruebe su Google Sheets.";
             }
         }
 
         function applyInitialFilter() {
             const products = document.querySelectorAll('.product-card');
             if(products.length === 0) return;
-            
             products.forEach(product => {
                 const category = product.getAttribute('data-category');
                 if (category === currentCategory) {
@@ -437,31 +537,17 @@
             document.getElementById('modalTitle').innerText = name;
             document.getElementById('modalPrice').innerText = `$${price} CUP`;
             document.getElementById('modalDesc').innerText = description;
-            
             const cleanName = name.replace(/'/g, "\\'");
             document.getElementById('modalActionBtn').innerHTML = `
-                <button class="btn-add" style="width:100%; margin-top:0;" onclick="addToCart('${cleanName}', ${price}); closeModal();">Agregar al Carrito</button>
+                <button class="btn-add" style="width:100%; margin-top:0;" onclick="addToCart('${cleanName}', ${price}); closeModal();">🛒 Añadir al Pedido</button>
             `;
-            
             document.getElementById('productModal').style.display = 'flex';
         }
 
-        function closeModal() {
-            document.getElementById('productModal').style.display = 'none';
-        }
+        function closeModal() { document.getElementById('productModal').style.display = 'none'; }
+        window.addEventListener('click', (e) => { if (e.target === document.getElementById('productModal')) closeModal(); });
 
-        window.addEventListener('click', (e) => {
-            const modal = document.getElementById('productModal');
-            if (e.target === modal) {
-                closeModal();
-            }
-        });
-
-        // Control del Carrito Lateral
-        function toggleCart() {
-            const sidebar = document.getElementById('cartSidebar');
-            sidebar.classList.toggle('open');
-        }
+        function toggleCart() { document.getElementById('cartSidebar').classList.toggle('open'); }
 
         function addToCart(name, price) {
             cart.push({name, price});
@@ -473,11 +559,10 @@
             const cartItemsElement = document.getElementById('cartItems');
             const totalElement = document.getElementById('cartTotal');
             const badge = document.getElementById('cartBadge');
-            
             cartItemsElement.innerHTML = '';
             
             if(cart.length === 0) {
-                cartItemsElement.innerHTML = '<p id="emptyMessage" style="color: #64748b; text-align: center; padding: 20px 0;">El carrito está vacío</p>';
+                cartItemsElement.innerHTML = '<p id="emptyMessage" style="color: var(--text-muted); text-align: center; padding: 25px 0;">El carrito de ventas está vacío</p>';
                 badge.style.display = 'none';
                 total = 0; 
             } else {
@@ -485,7 +570,7 @@
                     const li = document.createElement('li');
                     li.className = 'cart-item';
                     li.innerHTML = `
-                        <span>${item.name} - <b>$${item.price} CUP</b></span>
+                        <span>${item.name} - <b>$${item.price}</b></span>
                         <button class="btn-remove-item" onclick="removeFromCart(${index})">&times;</button>
                     `;
                     cartItemsElement.appendChild(li);
@@ -502,18 +587,13 @@
             updateCartUI();
         }
 
-        // Filtro interactivo de Categorías
         function filterCategory(categoryName, buttonElement) {
             currentCategory = categoryName.toLowerCase();
-            
             document.querySelectorAll('.btn-category').forEach(btn => btn.classList.remove('active'));
             buttonElement.classList.add('active');
             
-            const products = document.querySelectorAll('.product-card');
-
-            products.forEach(product => {
+            document.querySelectorAll('.product-card').forEach(product => {
                 const category = product.getAttribute('data-category');
-                
                 if (category === currentCategory) {
                     product.style.display = "flex";
                 } else {
@@ -522,57 +602,35 @@
             });
         }
 
-        // Enviar pedido estructurado hacia WhatsApp
         function processPayment(method) {
-            if(cart.length === 0) {
-                alert("El carrito está vacío.");
-                return;
-            }
+            if(cart.length === 0) { alert("El carrito está vacío."); return; }
 
             const name = document.getElementById('custName').value.trim();
             const phone = document.getElementById('custPhone').value.trim();
             const address = document.getElementById('custAddress').value.trim();
+            const almacen = document.getElementById('custAlmacen').value;
             const messaging = document.querySelector('input[name="messaging"]:checked').value;
 
-            if (!name || !phone || !address) {
-                alert("Por favor, complete todos los campos obligatorios (*) de los datos de entrega.");
-                return;
-            }
+            if (!name || !phone || !address) { alert("Complete los campos obligatorios (*)."); return; }
 
-            let message = `¡Hola Tienda Hogar! \n`;
-            message += `Quiero confirmar el siguiente pedido:\n\n`;
+            let message = `¡Hola Tienda Hogar! 🧾 (Pre-Factura Web)\n`;
+            message += `Solicito el vale de salida para la siguiente orden:\n\n`;
+            cart.forEach(item => { message += `- ${item.name} ($${item.price} CUP)\n`; });
+            message += `\n💵 Importe Total: $${total} CUP`;
+            message += `\n📦 Despacho desde: ${almacen}`;
+            message += `\n💳 Canal de Pago: ${method}`;
             
-            cart.forEach(item => { 
-                message += `- ${item.name} ($${item.price} CUP)\n`; 
-            });
+            if (method === 'Transfermóvil') message += `\n📍 Tarjeta Destino: ${MI_TARJETA_PAGO}`;
+            else if (method === 'EnZona') message += `\n📍 Móvil Destino: ${MI_MOVIL_PAGO}`;
 
-            message += `\n💰 Total: $${total} CUP`;
-            message += `\n💳 Método de Pago: ${method}`;
-            
-            if (method === 'Transfermóvil') {
-                message += `\n📍 Destino de Transferencia (Tarjeta): ${MI_TARJETA_PAGO}`;
-            } else if (method === 'EnZona') {
-                message += `\n📍 Destino de Transferencia (Móvil): ${MI_MOVIL_PAGO}`;
-            }
-
-            message += `\n\n👤 Datos del Cliente:`;
-            message += `\n- Nombre: ${name}`;
+            message += `\n\n👤 Datos para la Factura:`;
+            message += `\n- Cliente: ${name}`;
             message += `\n- Teléfono: ${phone}`;
-            message += `\n- Dirección: ${address}`;
-            message += `\n- ¿Requiere Mensajería?: ${messaging}`;
-
-            if(method === 'Efectivo') {
-                alert(`Listo para pagar en Efectivo ($${total} CUP).\nPresiona aceptar para enviar los detalles de la orden a WhatsApp.`);
-            } else if(method === 'EnZona') {
-                alert(`Realice la transferencia de $${total} CUP al móvil de EnZona:\n👉 ${MI_MOVIL_PAGO}\n\nAl aceptar, se enviará la orden por WhatsApp para que adjuntes el comprobante.`);
-            } else if(method === 'Transfermóvil') {
-                alert(`Realice la transferencia de $${total} CUP a la tarjeta:\n👉 ${MI_TARJETA_PAGO}\n\nAl aceptar, se enviará la orden por WhatsApp para que adjuntes el comprobante.`);
-            }
+            message += `\n- Destino: ${address}`;
+            message += `\n- Mensajería: ${messaging}`;
 
             const encodedMessage = encodeURIComponent(message);
-            const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
-
-            window.open(whatsappUrl, '_blank');
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`, '_blank');
         }
     </script>
 </body>
