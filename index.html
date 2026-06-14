@@ -41,20 +41,39 @@
         .section-title { font-size: 2rem; text-align: center; margin-bottom: 40px; color: #334155; font-weight: 700; position: relative; }
         .section-title::after { content: ''; display: block; width: 50px; height: 4px; background-color: var(--primary); margin: 10px auto 0 auto; border-radius: 2px; }
         
-        .services-grid { display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; margin-bottom: 30px; }
-        .service-card { background: white; padding: 30px 20px; border-radius: 16px; width: 220px; box-shadow: var(--card-shadow); border: 1px solid #edf2f1; transition: 0.25s; text-align: center; }
-        .service-card:hover { transform: translateY(-5px); box-shadow: var(--card-shadow-hover); border-top: 5px solid var(--accent); }
-        .service-icon { font-size: 2.5rem; margin-bottom: 15px; color: var(--primary); }
-        .service-card h4 { margin: 0; color: #334155; font-size: 1.1rem; }
+        /* CORRECCIÓN: Servicios con iconos pequeños y texto abajo */
+        .services-grid { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-bottom: 30px; }
+        .service-card { background: white; padding: 12px 20px; border-radius: 12px; width: 140px; box-shadow: var(--card-shadow); border: 1px solid #edf2f1; transition: 0.25s; text-align: center; }
+        .service-card:hover { transform: translateY(-3px); box-shadow: var(--card-shadow-hover); border-bottom: 3px solid var(--accent); }
+        .service-icon { font-size: 1.4rem; margin-bottom: 4px; color: var(--primary); }
+        .service-card h4 { margin: 0; color: #334155; font-size: 0.9rem; font-weight: 600; }
 
         .products-grid { display: flex; justify-content: center; gap: 25px; flex-wrap: wrap; }
         .product-card { background: white; border-radius: 16px; width: 280px; overflow: hidden; box-shadow: var(--card-shadow); border: 1px solid #edf2f1; transition: 0.25s; display: flex; flex-direction: column; position: relative; }
         .product-card:hover { transform: translateY(-5px); box-shadow: var(--card-shadow-hover); }
         .product-badge { position: absolute; top: 15px; left: 15px; background-color: var(--primary); color: white; padding: 5px 12px; font-size: 0.75rem; font-weight: bold; border-radius: 20px; text-transform: uppercase; z-index: 10; }
-        .product-img { width: 100%; height: 200px; object-fit: cover; }
+        
+        /* CORRECCIÓN: Cursor modificado para indicar que la imagen es clickeable */
+        .product-img { width: 100%; height: 200px; object-fit: cover; cursor: zoom-in; transition: opacity 0.2s; }
+        .product-img:hover { opacity: 0.9; }
+        
         .product-info { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+        .product-info h4 { margin: 0 0 10px 0; font-size: 1.15rem; }
         .product-price { font-size: 1.35rem; color: var(--accent); font-weight: 700; margin-bottom: 15px; }
         .btn-order { background-color: var(--whatsapp); color: white; text-decoration: none; padding: 11px; border-radius: 10px; text-align: center; font-weight: bold; font-size: 0.95rem; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; margin-top: auto; }
+
+        /* NUEVO: Estilos para la ventana Modal */
+        .modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); justify-content: center; align-items: center; padding: 20px; }
+        .modal-content { background-color: white; border-radius: 16px; max-width: 500px; width: 100%; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: animatemodal 0.3s; position: relative; }
+        @keyframes animatemodal { from {transform: scale(0.8); opacity: 0;} to {transform: scale(1); opacity: 1;} }
+        .modal-close { position: absolute; top: 15px; right: 20px; font-size: 1.8rem; color: #64748b; cursor: pointer; transition: 0.2s; z-index: 10; }
+        .modal-close:hover { color: #1e293b; }
+        .modal-img { width: 100%; height: 250px; object-fit: cover; }
+        .modal-body { padding: 25px; }
+        .modal-title { font-size: 1.5rem; margin: 0 0 10px 0; color: #1e293b; font-weight: 700; }
+        .modal-details { font-size: 0.95rem; color: #475569; margin-bottom: 20px; }
+        .modal-details ul { padding-left: 20px; margin: 10px 0; }
+        .modal-details li { margin-bottom: 6px; }
 
         footer { background: linear-gradient(135deg, #1e293b, #0f172a); color: #94a3b8; padding: 50px 20px; text-align: center; border-top: 4px solid var(--primary); }
         .social-containers { display: flex; justify-content: center; gap: 15px; flex-wrap: wrap; margin-top: 20px; }
@@ -107,7 +126,9 @@
                 <!-- PRODUCTO 1 -->
                 <div class="product-card">
                     <span class="product-badge">Nuevo</span>
-                    <img src="IMG-20260521-WA0032.jpg" alt="Funda" class="product-img">
+                    <!-- Agregamos data-specs para guardar las especificaciones personalizadas -->
+                    <img src="IMG-20260521-WA0032.jpg" alt="Funda" class="product-img" 
+                         data-specs="<li>Material elástico de alta calidad.</li><li>Lavable a máquina y fácil de colocar.</li><li>Disponible en varios colores modernos.</li><li>Protección total contra manchas y mascotas.</li>">
                     <div class="product-info">
                         <h4>Funda Confort para Sofá</h4>
                         <div class="product-price">$28,000 CUP</div>
@@ -119,7 +140,8 @@
                 <!-- PRODUCTO 2 -->
                 <div class="product-card">
                     <span class="product-badge">Top</span>
-                    <img src="IMG-20260606-WA0018.jpg" alt="Estante" class="product-img">
+                    <img src="IMG-20260606-WA0018.jpg" alt="Estante" class="product-img"
+                         data-specs="<li>Estructura firme y metálica de alta duración.</li><li>3 niveles amplios de organización.</li><li>Ideal para cocina, baño o salas de estar.</li><li>Fácil de armar en menos de 10 minutos.</li>">
                     <div class="product-info">
                         <h4>Estante Organizador Multiuso</h4>
                         <div class="product-price">$14,000 CUP</div>
@@ -131,7 +153,8 @@
                 <!-- PRODUCTO 3 -->
                 <div class="product-card">
                     <span class="product-badge">Premium</span>
-                    <img src="IMG-20260606-WA0019.jpg" alt="Cuchillos" class="product-img">
+                    <img src="IMG-20260606-WA0019.jpg" alt="Cuchillos" class="product-img"
+                         data-specs="<li>Hojas de acero inoxidable de alta resistencia.</li><li>Mangos ergonómicos antideslizantes.</li><li>Incluye: Cuchillo chef, para pan, verduras y taco de madera.</li><li>Filo duradero de calidad profesional.</li>">
                     <div class="product-info">
                         <h4>Set de Cuchillos Premium</h4>
                         <div class="product-price">$18,000 CUP</div>
@@ -144,6 +167,23 @@
         </section>
     </main>
 
+    <!-- NUEVO: Estructura de la ventana Modal única -->
+    <div id="productModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" id="closeModal">&times;</span>
+            <img src="" alt="Producto Modal" id="modalImg" class="modal-img">
+            <div class="modal-body">
+                <h4 id="modalTitle" class="modal-title">Título del Producto</h4>
+                <div class="modal-details">
+                    <p style="font-weight: bold; margin-bottom: 5px;">Especificaciones:</p>
+                    <ul id="modalSpecs">
+                        <!-- Aquí se inyectan dinámicamente las especificaciones -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer>
         <h3>Contacto Oficial</h3>
         <div class="social-containers">
@@ -153,6 +193,45 @@
         <a href="https://api.whatsapp.com/send?phone=5350168277" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> Contactar por WhatsApp</a>
         <p style="margin-top:40px; font-size:0.85rem;">&copy; 2026 Tienda Hogar.</p>
     </footer>
+
+    <!-- NUEVO: Lógica en JavaScript para controlar el Modal de forma dinámica -->
+    <script>
+        const modal = document.getElementById('productModal');
+        const closeModal = document.getElementById('closeModal');
+        const modalImg = document.getElementById('modalImg');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalSpecs = document.getElementById('modalSpecs');
+
+        // Escuchar clics en todas las imágenes de productos
+        document.querySelectorAll('.product-img').forEach(img => {
+            img.addEventListener('click', function() {
+                // Obtener los datos de la tarjeta contenedora
+                const card = this.closest('.product-card');
+                const titleText = card.querySelector('.product-info h4').innerText;
+                const specifications = this.getAttribute('data-specs');
+
+                // Asignar los datos al modal
+                modalImg.src = this.src;
+                modalTitle.innerText = titleText;
+                modalSpecs.innerHTML = specifications || '<li>No hay especificaciones disponibles para este producto.</li>';
+
+                // Mostrar el modal
+                modal.style.display = 'flex';
+            });
+        });
+
+        // Cerrar al darle a la 'X'
+        closeModal.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        // Cerrar si hacen clic fuera de la caja blanca
+        window.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                modal.style.display = 'none';
+            }
+        });
+    </script>
 
 </body>
 </html>
